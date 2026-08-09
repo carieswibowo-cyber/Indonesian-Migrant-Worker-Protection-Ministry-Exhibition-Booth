@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Reality 360° - Multilingual Exhibition Hall</title>
+
+  <!-- Mengimpor Library WebXR A-Frame Resmi -->
+  
+
+  
+
+  
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/walkthrough-v13.css">
+  <script src="js/app.js" defer></script>
+  </head>
+<body>
+
+  <!-- 1. MULTILINGUAL SWITCHER INTERFACE (KIRI ATAS) -->
+  <div id="language-switcher-container">
+    <button id="btn-lang-id" class="lang-btn active" onclick="switchLanguage('id')">ID</button>
+    <button id="btn-lang-en" class="lang-btn" onclick="switchLanguage('en')">EN</button>
+    <button id="btn-lang-jp" class="lang-btn" onclick="switchLanguage('jp')">JP</button>
+  </div>
+
+  <!-- 2. LIVE AMBIENT AUDIO SYSTEM -->
+  <audio id="ambient-sound" loop>
+    <source src="https://assets.mixkit.co/active_storage/sfx/1547/1547-84.wav" type="audio/wav">
+  </audio>
+  <audio id="swoosh-sound">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" type="audio/wav">
+  </audio>
+
+  <!-- Tombol On/Off Suara Latar -->
+  <button id="audio-control-btn" class="muted" onclick="toggleAudio()" title="Aktifkan Suara Pameran">🔇</button>
+
+  <!-- 3. Jendela Pop-up Informasi & Registrasi WhatsApp -->
+  <div id="info-modal">
+    <h2 id="modal-title">Judul Informasi</h2>
+
+    <div id="modal-content-wrapper">
+      <div id="modal-body" class="modal-content">
+        <!-- Konten via JavaScript -->
+      </div>
+      <div style="width:100%; overflow:hidden;">
+        <button id="btn-modal-close" class="close-btn" onclick="closeModal()">Tutup</button>
+        <button id="register-trigger-btn" class="register-btn" onclick="showRegistrationForm()">Daftar Program / Konsultasi</button>
+      </div>
+    </div>
+
+    <div id="registration-form-container">
+      <h3 id="form-header-title" style="color:#FF3366; margin-top:0; font-size:16px;">Formulir Pendaftaran Vokasi / Konsultasi</h3>
+
+      <div class="form-group">
+        <label id="lbl-form-program" for="form-program">Program yang Dipilih (Otomatis):</label>
+        <input type="text" id="form-program" readonly style="background: rgba(255, 255, 255, 0.1); border-color: rgba(0, 255, 204, 0.15); color: #00FFCC; font-weight: bold;">
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-form-name" for="form-name">Nama Lengkap Anda:</label>
+        <input type="text" id="form-name" placeholder="Contoh: Budi Santoso" required>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-form-phone" for="form-phone">Nomor WhatsApp Aktif:</label>
+        <input type="tel" id="form-phone" placeholder="Contoh: 081234567890" required>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-form-notes" for="form-notes">Catatan atau Pertanyaan (Opsional):</label>
+        <textarea id="form-notes" rows="3" placeholder="Tuliskan pertanyaan Anda..."></textarea>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; margin-top:15px;">
+        <button id="btn-form-back" class="close-btn" onclick="hideRegistrationForm()" style="margin:0;">Kembali</button>
+        <button id="btn-form-submit" class="submit-form-btn" onclick="submitRegistration()" style="width:auto; margin:0; padding: 10px 25px;">Kirim Data</button>
+      </div>
+    </div>
+
+    <!-- Layar Sukses Terlokalisasi -->
+    <div id="success-container" style="display:none;">
+      <div class="success-panel">
+        <div class="success-icon">✓</div>
+        <h3 id="success-title-text" style="color:#00FFCC; margin-top:0;">Pendaftaran Berhasil Disiapkan!</h3>
+        <p id="success-desc-text" style="font-size:14px; color:#ccc;">Klik tombol hijau di bawah ini untuk mengirimkan detail pendaftaran langsung kepada Admin Official WhatsApp kami:</p>
+
+        <a id="whatsapp-link-btn" href="#" target="_blank" class="whatsapp-btn">Hubungi Admin via WhatsApp</a>
+        <br>
+        <button id="success-close-btn-action" class="close-btn" onclick="closeModal()" style="float:none; display:inline-block; margin-top:20px;">Selesai & Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Petunjuk Navigasi Mengambang di Kiri Atas -->
+  <div id="floating-instructions" class="vr-instructions">
+    <strong>Petunjuk Eksplorasi:</strong><br>
+    • Geser kursor/layar (PC/HP) untuk memutar arah 360°.<br>
+    • Klik Portal <span style="color:#00FFCC; font-weight:bold;">Hijau</span> / Titik <span style="color:#00FFCC; font-weight:bold;">Radar</span> untuk pindah booth.<br>
+    • Klik Hotspot <span style="color:#FFCC00; font-weight:bold;">Kuning</span> atau <span style="color:#FF3366; font-weight:bold;">Pink</span> untuk Brosur & Video.
+  </div>
+
+  <!-- 3. INTERACTIVE LIVE CHAT SYSTEM (KIRI BAWAH LAYAR) -->
+  <div id="live-chat-container">
+    <button id="chat-trigger-btn" onclick="toggleChatWindow()">
+      <div class="chat-badge">1</div>
+      <svg viewBox="0 0 24 24">
+        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+      </svg>
+    </button>
+
+    <div id="chat-window">
+      <div class="chat-header">
+        <div class="chat-header-title">
+          <div class="chat-status-dot"></div>
+          <div>
+            <h4 id="chat-header-name">Sistem Layanan Pameran</h4>
+            <p id="chat-header-sub">Petugas Informasi Resmi (BP2MI)</p>
+          </div>
+        </div>
+        <button class="chat-close-btn" onclick="toggleChatWindow()">×</button>
+      </div>
+
+      <div id="chat-messages-area" class="chat-messages">
+        <div class="message received">
+          Halo! Selamat datang di Pameran Perlindungan Pekerja Migran Indonesia. Ada informasi program vokasi atau penempatan ke luar negeri yang ingin Anda tanyakan?
+        </div>
+      </div>
+
+      <div class="quick-replies-container">
+        <button id="btn-qr-japan" class="quick-reply-btn" onclick="sendQuickReply('Program Magang Jepang')">Magang Jepang 🇯🇵</button>
+        <button id="btn-qr-germany" class="quick-reply-btn" onclick="sendQuickReply('Perawat di Jerman')">Perawat Jerman 🇩🇪</button>
+        <button id="btn-qr-bp2mi" class="quick-reply-btn" onclick="sendQuickReply('Cara Daftar BP2MI')">Regulasi Resmi BP2MI</button>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" id="chat-user-input" placeholder="Ketik pesan Anda..." onkeypress={handleChatKeyPress(event)}>
+        <button id="btn-chat-send" class="chat-send-btn" onclick="sendUserChatMessage()">Kirim</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE HUD FLOOR PLAN / RADAR MINIMAP (KANAN BAWAH LAYAR) -->
+  <div id="radar-minimap">
+    <div class="radar-sweep"></div>
+
+    <svg class="minimap-lines">
+      <line x1="85" y1="85" x2="51" y2="42" stroke="rgba(0, 255, 204, 0.2)" stroke-width="1.5" />
+      <line x1="85" y1="85" x2="30" y2="85" stroke="rgba(0, 255, 204, 0.2)" stroke-width="1.5" />
+      <line x1="85" y1="85" x2="119" y2="42" stroke="rgba(0, 255, 204, 0.2)" stroke-width="1.5" />
+      <line x1="85" y1="85" x2="140" y2="85" stroke="rgba(0, 255, 204, 0.2)" stroke-width="1.5" />
+      <line x1="85" y1="85" x2="85" y2="136" stroke="rgba(0, 255, 204, 0.2)" stroke-width="1.5" />
+    </svg>
+
+    <div id="node-kementerian" class="radar-node active" onclick="navigateTo('kementerian')"></div>
+    <div class="minimap-label" style="top:50%; left:50%;">LOBI</div>
+
+    <div id="node-binawan" class="radar-node" onclick="navigateTo('binawan')"></div>
+    <div class="minimap-label" style="top:25%; left:30%;">BINAWAN</div>
+
+    <div id="node-hamawork" class="radar-node" onclick="navigateTo('hamawork')"></div>
+    <div class="minimap-label" style="top:50%; left:18%; transform: translate(-100%, -50%) margin-left: -4px;">HWS</div>
+
+    <div id="node-jpath" class="radar-node" onclick="navigateTo('jpath')"></div>
+    <div class="minimap-label" style="top:25%; left:70%;">J'PATH</div>
+
+    <div id="node-lpkcis" class="radar-node" onclick="navigateTo('lpkcis')"></div>
+    <div class="minimap-label" style="top:50%; left:82%; transform: translate(0, -50%) margin-left: 12px;">CIS</div>
+
+    <div id="node-maharani" class="radar-node" onclick="navigateTo('maharani')"></div>
+    <div class="minimap-label" style="top:80%; left:50%;">MAHARANI</div>
+  </div>
+
+
+  <!-- WALKTHROUGH HUD -->
+  <div id="walkthrough-hud">
+    <span class="walk-status" id="walk-status">WALKTHROUGH • LOBI</span>
+    <button class="walk-btn" id="walk-prev" onclick="walkPrevious()">← BACK</button>
+    <button class="walk-btn primary" id="walk-next" onclick="walkNext()">NEXT STOP →</button>
+    <button class="walk-btn route-hide" onclick="toggleGuidedTour()" id="walk-tour-btn">GUIDED TOUR</button>
+  </div>
+  <div id="walk-progress-wrap"><div id="walk-progress"></div></div>
+  <div id="walkthrough-help">W / S = jalan antar booth • A / D = putar • Mouse = lihat • Klik portal = berjalan ke booth</div>
+  <div id="walk-mobile-controls" aria-label="Mobile walkthrough controls">
+    <button class="walk-pad" id="walk-forward" aria-label="Next">▲</button>
+    <button class="walk-pad" id="walk-left" aria-label="Left">◀</button>
+    <button class="walk-pad" id="walk-right" aria-label="Right">▶</button>
+    <button class="walk-pad" id="walk-back" aria-label="Back">▼</button>
+  </div>
+
+  <!-- Inisialisasi Scene VR (A-Frame) -->
+  <!-- REVISI MANVIEW v11: a-sky diletakkan dengan position="0 1.2 0" untuk merendahkan posisi relatif kamera di lantai -->
+  <a-scene booth-manager cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+
+    <a-assets>
+      <img id="kementerian" src="kementerianv.jpg">
+      <img id="binawan" src="binawanv.jpg">
+      <img id="hamawork" src="hamaworksolutionv.jpg">
+      <img id="jpath" src="jpathv.jpg">
+      <img id="lpkcis" src="lpkcisv.jpg">
+      <img id="maharani" src="maharanitriv.jpg">
+    </a-assets>
+
+    <a-entity position="0 0 0">
+      <!-- Ditambahkan zoom-controls untuk scroll mouse memperbesar/memperkecil sudut pandang -->
+      <a-camera look-controls="pointerLockEnabled: false" camera="fov: 80" zoom-controls>
+        <a-text id="hud-title" value="Memuat pameran..."
+                align="center" position="0 1.5 -3" scale="0.9 0.9 0.9" color="#00FFCC"
+                geometry="primitive: plane; width: 3.5; height: 0.4"
+                material="color: #05101a; opacity: 0.8; shader: flat"></a-text>
+      </a-camera>
+    </a-entity>
+
+    <a-entity id="portal-container"></a-entity>
+    <a-entity id="hotspot-container"></a-entity>
+
+    <!-- REVISI MANVIEW v11: position="0 1.2 0" -->
+    <a-sky id="image-360" radius="10" src="#kementerian" position="0 1.2 0"></a-sky>
+
+  </a-scene>
+
+  
+
+
+
+  
+
+
+
+  <div id="wv13-guide">WASD / ↑↓ untuk berjalan • ← → untuk melihat</div>
+  <div id="wv13-hud">
+    <button id="wv13-back">← BACK</button>
+    <button id="wv13-forward">NEXT →</button>
+    <button id="wv13-tour">▶ TOUR</button>
+    <button id="wv13-stop" style="display:none">■ STOP</button>
+    <span id="wv13-status">FREE WALK</span>
+  </div>
+  <script src="js/walkthrough-v13.js" defer></script>
+
+</body>
+</html>
