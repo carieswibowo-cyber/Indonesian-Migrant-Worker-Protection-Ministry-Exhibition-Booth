@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Virtual Reality 360° - Multilingual Exhibition Hall</title>
+  <title>Virtual Reality 360° - Exhibition Hall with Manview Adjustment</title>
 
   <!-- Mengimpor Library WebXR A-Frame Resmi -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -48,7 +48,7 @@
     #info-modal .modal-content {
       margin-top: 15px;
       line-height: 1.6;
-      max-height: 280px;
+      max-height: 300px;
       overflow-y: auto;
       font-size: 15px;
     }
@@ -199,7 +199,43 @@
       background: #34e073;
     }
 
-    /* 2. AUDIO CONTROL BUTTON (KANAN ATAS) */
+    /* 2. MULTILINGUAL SWITCHER INTERFACE (KIRI ATAS) */
+    #language-switcher-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 6px;
+      z-index: 1001;
+    }
+
+    .lang-btn {
+      background: rgba(10, 20, 30, 0.85);
+      border: 1px solid rgba(0, 255, 204, 0.4);
+      color: rgba(0, 255, 204, 0.6);
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn:hover {
+      color: #00FFCC;
+      border-color: #00FFCC;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+    }
+
+    .lang-btn.active {
+      background: #00FFCC;
+      color: #05101a;
+      border-color: #00FFCC;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+    }
+
+    /* 3. LIVE AMBIENT AUDIO CONTROL BUTTON (KANAN ATAS) */
     #audio-control-btn {
       position: fixed;
       top: 20px;
@@ -239,50 +275,11 @@
       100% { box-shadow: 0 0 15px rgba(255, 51, 102, 0.6); }
     }
 
-    /* 3. MULTILINGUAL SWITCHER PANEL (KIRI ATAS) */
-    #language-switcher-container {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: rgba(10, 20, 30, 0.85);
-      border: 2px solid #00FFCC;
-      border-radius: 20px;
-      padding: 4px 8px;
-      display: flex;
-      gap: 6px;
-      z-index: 1001;
-      backdrop-filter: blur(5px);
-      box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
-    }
-
-    .lang-btn {
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 12px;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .lang-btn:hover {
-      color: #ffffff;
-    }
-
-    .lang-btn.active {
-      background: #00FFCC;
-      color: #05101a;
-      box-shadow: 0 0 8px #00FFCC;
-    }
-
     /* 4. Petunjuk Navigasi Mengambang di Kiri Bawah */
     .vr-instructions {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      width: 250px;
       background: rgba(10, 15, 25, 0.85);
       backdrop-filter: blur(5px);
       padding: 12px 18px;
@@ -294,10 +291,9 @@
       pointer-events: none;
       border: 1px solid rgba(0, 255, 204, 0.2);
       border-left: 4px solid #00FFCC;
-      line-height: 1.5;
     }
 
-    /* 5. INTERACTIVE FLOOR PLAN / RADAR MINIMAP (KANAN BAWAH) */
+    /* 5. INTERACTIVE 3D-STYLE FLOOR PLAN (RADAR MINIMAP) DI KANAN BAWAH */
     #radar-minimap {
       position: fixed;
       bottom: 20px;
@@ -415,14 +411,14 @@
     #live-chat-container {
       position: fixed;
       bottom: 20px;
-      left: 285px; /* Digeser ke kanan agar tidak bertabrakan dengan teks panduan */
+      left: 190px; /* Digeser agar tidak menumpuk dengan panduan instruksi */
       z-index: 1000;
       font-family: 'Segoe UI', -apple-system, sans-serif;
     }
 
     #chat-trigger-btn {
-      width: 52px;
-      height: 52px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: #00FFCC;
       color: #05101a;
@@ -442,8 +438,8 @@
     }
 
     #chat-trigger-btn svg {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       fill: currentColor;
     }
 
@@ -472,7 +468,7 @@
 
     #chat-window {
       display: none;
-      width: 310px;
+      width: 320px;
       height: 380px;
       background: rgba(10, 20, 30, 0.95);
       backdrop-filter: blur(15px);
@@ -484,7 +480,7 @@
       overflow: hidden;
       animation: slideUp 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
       position: absolute;
-      bottom: 65px;
+      bottom: 60px;
       left: 0;
     }
 
@@ -525,7 +521,7 @@
 
     .chat-header p {
       margin: 2px 0 0 0;
-      font-size: 9.5px;
+      font-size: 10px;
       color: rgba(255,255,255,0.6);
     }
 
@@ -598,7 +594,7 @@
       color: #00FFCC;
       border-radius: 15px;
       padding: 5px 10px;
-      font-size: 10.5px;
+      font-size: 11px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -648,156 +644,126 @@
   </style>
 
   <script>
-    // Konfigurasi Nomor WhatsApp Penerima (Ubah sesuai dengan admin Anda)
+    // Konfigurasi Nomor WhatsApp Penerima Data Pendaftaran & Hubungi Admin Chat
     var targetWhatsAppNumber = "628123456789";
 
-    // ==========================================
-    // DATABASE MULTIBAHASA (INDONESIAN, ENGLISH, JAPANESE)
-    // ==========================================
-    var currentLanguage = "id"; // Bahasa bawaan awal: Indonesia
-
+    // Sistem Penyimpanan Bahasa Internasional (L10n Dictionary)
+    var currentLanguage = 'id';
     var localization = {
       id: {
-        hud_loading: "Memuat pameran...",
         nav_instructions: "<strong>Petunjuk Eksplorasi:</strong><br>• Geser kursor/layar (PC/HP) untuk memutar arah 360°.<br>• Klik Portal <span style='color:#00FFCC; font-weight:bold;'>Hijau</span> / Titik <span style='color:#00FFCC; font-weight:bold;'>Radar</span> untuk pindah booth.<br>• Klik Hotspot <span style='color:#FFCC00; font-weight:bold;'>Kuning</span> atau <span style='color:#FF3366; font-weight:bold;'>Pink</span> untuk Brosur & Video.",
-        chat_header: "Sistem Layanan Pameran",
-        chat_subheader: "Petugas Informasi Resmi (BP2MI)",
-        chat_placeholder: "Ketik pesan Anda di sini...",
-        chat_send: "Kirim",
-        chat_welcome: "Halo! Selamat datang di Pameran Perlindungan Pekerja Migran Indonesia. Ada informasi program vokasi atau penempatan ke luar negeri yang ingin Anda tanyakan?",
+        btn_close: "Tutup",
+        btn_register: "Daftar Program / Konsultasi",
         form_title: "Formulir Pendaftaran Vokasi / Konsultasi",
-        form_program_label: "Program yang Dipilih (Otomatis):",
-        form_name_label: "Nama Lengkap Anda:",
-        form_name_placeholder: "Contoh: Budi Santoso",
-        form_phone_label: "Nomor WhatsApp Aktif:",
-        form_phone_placeholder: "Contoh: 081234567890",
-        form_notes_label: "Catatan atau Pertanyaan (Opsional):",
-        form_notes_placeholder: "Tuliskan pertanyaan Anda...",
-        form_back_btn: "Kembali",
-        form_submit_btn: "Kirim Data",
+        form_label_prog: "Program yang Dipilih (Otomatis):",
+        form_label_name: "Nama Lengkap Anda:",
+        form_label_phone: "Nomor WhatsApp Aktif:",
+        form_label_notes: "Catatan atau Pertanyaan (Opsional):",
+        form_placeholder_name: "Contoh: Budi Santoso",
+        form_placeholder_phone: "Contoh: 081234567890",
+        form_placeholder_notes: "Tuliskan pertanyaan Anda...",
+        form_btn_back: "Kembali",
+        form_btn_submit: "Kirim Data",
+        alert_missing_fields: "Mohon isi Nama Lengkap dan Nomor WhatsApp Anda terlebih dahulu!",
         success_title: "Pendaftaran Berhasil Disiapkan!",
         success_desc: "Klik tombol hijau di bawah ini untuk mengirimkan detail pendaftaran langsung kepada Admin Official WhatsApp kami:",
-        success_wa_btn: "Hubungi Admin via WhatsApp",
-        success_close_btn: "Selesai & Tutup",
-        close_btn: "Tutup",
-        register_btn: "Daftar Program / Konsultasi",
-        radar_lobi: "LOBI",
-        hotspot_info_label: "ℹ INFO BROSUR",
-        hotspot_video_label: "▶ TONTON VIDEO",
-        quick_reply_1: "Magang Jepang 🇯🇵",
-        quick_reply_2: "Perawat Jerman 🇩🇪",
-        quick_reply_3: "Regulasi BP2MI ⚖️",
-        audio_muted_title: "Aktifkan Suara Pameran",
-        audio_playing_title: "Matikan Suara Latar",
-        alert_missing_fields: "Mohon isi Nama Lengkap dan Nomor WhatsApp Anda terlebih dahulu!",
-        wa_message_header: "Halo Admin Pameran Pekerja Migran,\n\nSaya ingin mendaftar program/berkonsultasi mengenai:\n👉 *Program:* ",
-        wa_message_body: "\n\nBerikut adalah data diri saya:\n• *Nama:* ",
-        wa_message_phone: "\n• *No. WhatsApp:* ",
-        wa_message_notes: "\n• *Catatan Tambahan:* ",
-        wa_message_footer: "\n\nTerima kasih. Mohon info tindak lanjutnya.",
-
-        // Chat Responses
+        success_btn_wa: "Hubungi Admin via WhatsApp",
+        success_btn_finish: "Selesai & Tutup",
+        chat_header_subtitle: "Petugas Informasi Resmi (BP2MI)",
+        chat_welcome: "Halo! Selamat datang di Pameran Perlindungan Pekerja Migran Indonesia. Ada informasi program vokasi atau penempatan ke luar negeri yang ingin Anda tanyakan?",
+        chat_placeholder: "Ketik pesan...",
+        chat_btn_send: "Kirim",
+        chat_reply_japan_magang: "Magang Jepang 🇯🇵",
+        chat_reply_germany_med: "Perawat Jerman 🇩🇪",
+        chat_reply_bp2mi_rules: "Regulasi Resmi BP2MI",
+        wa_message_header: "Halo Admin Pameran Pekerja Migran,\\n\\nSaya ingin mendaftar program/berkonsultasi mengenai:\\n👉 *Program:* ",
+        wa_message_body: "\\n\\nBerikut adalah data diri saya:\\n• *Nama:* ",
+        wa_message_phone: "\\n• *No. WhatsApp:* ",
+        wa_message_notes: "\\n• *Catatan Tambahan:* ",
+        wa_message_footer: "\\n\\nTerima kasih. Mohon info tindak lanjutnya.",
+        bot_chat_wa_invite: "\\n\\nHubungi admin via WA sekarang: https://wa.me/",
         bot_response_japan: "Tentu! Kami memiliki program Magang Jepang & Kelas Khusus Bahasa/Kepatuhan untuk Specified Skilled Worker (SSW) melalui LPK-CIS, Hama Work Solution (HWS), dan J'Path Center. Anda dapat melihat brosurnya langsung di booth mereka atau mendaftar konsultasi.",
         bot_response_germany: "Benar, untuk penempatan tenaga medis (perawat) ke Jerman dan Timur Tengah, difasilitasi oleh Binawan Inti Utama yang telah berpengalaman 49 tahun. Silakan menuju ke Booth Binawan melalui portal atau radar di kanan bawah untuk detail beasiswa.",
-        bot_response_bp2mi: "Pendaftaran resmi Calon Pekerja Migran Indonesia (CPMI) wajib mematuhi standar BP2MI agar bebas biaya penempatan ilegal. Kami sarankan Anda mengisi form pendaftaran pada Klinik Layanan di Lobi Utama agar dihubungi langsung oleh petugas.",
-        bot_response_fallback: "Terima kasih atas pertanyaannya. Jika Anda ingin berdiskusi langsung dengan petugas resmi kami seputar penempatan kerja yang aman, Anda dapat menghubungi Official WhatsApp Admin kami.",
-        bot_chat_wa_invite: "\n\nHubungi admin via WA sekarang: https://wa.me/"
+        bot_response_bp2mi: "Pendaftaran resmi Calon Pekerja Migran Indonesia (CPMI) wajib mematuhi standar BP2MI agar bebas biaya penempatan ilegal. Kami sarankan Anda mengisi form konsultasi pada Klinik Layanan di Lobi Utama agar dihubungi langsung oleh petugas imigrasi.",
+        bot_response_fallback: "Terima kasih atas pertanyaannya. Jika Anda ingin berdiskusi langsung dengan petugas resmi kami seputar penempatan kerja yang aman, Anda dapat menghubungi Official WhatsApp Admin kami."
       },
       en: {
-        hud_loading: "Loading exhibition...",
         nav_instructions: "<strong>Exploration Tips:</strong><br>• Click & drag (PC) or move your phone (Mobile) to look around 360°.<br>• Click the <span style='color:#00FFCC; font-weight:bold;'>Green</span> portals / <span style='color:#00FFCC; font-weight:bold;'>Radar</span> nodes to change booths.<br>• Click <span style='color:#FFCC00; font-weight:bold;'>Yellow</span> or <span style='color:#FF3366; font-weight:bold;'>Pink</span> hotspots to open brochures/videos.",
-        chat_header: "Exhibition Support Desk",
-        chat_subheader: "Official Information Officer (BP2MI)",
-        chat_placeholder: "Type your message here...",
-        chat_send: "Send",
-        chat_welcome: "Hello! Welcome to the Indonesian Migrant Worker Protection Exhibition. Do you have any questions about vocational programs or overseas job placement?",
-        form_title: "Vocational Program / Consultation Sign Up",
-        form_program_label: "Selected Program (Auto):",
-        form_name_label: "Your Full Name:",
-        form_name_placeholder: "E.g., John Doe",
-        form_phone_label: "Active WhatsApp Number:",
-        form_phone_placeholder: "E.g., +6281234567890",
-        form_notes_label: "Additional Notes or Questions (Optional):",
-        form_notes_placeholder: "Write your inquiries here...",
-        form_back_btn: "Back",
-        form_submit_btn: "Submit Data",
-        success_title: "Registration successfully compiled!",
-        success_desc: "Click the green button below to submit your details directly to our Official WhatsApp Administrator:",
-        success_wa_btn: "Contact Admin on WhatsApp",
-        success_close_btn: "Done & Close",
-        close_btn: "Close",
-        register_btn: "Register Program / Consult",
-        radar_lobi: "LOBBY",
-        hotspot_info_label: "ℹ INFO BROCHURE",
-        hotspot_video_label: "▶ PLAY VIDEO",
-        quick_reply_1: "Japan Internship 🇯🇵",
-        quick_reply_2: "Germany Nurse 🇩🇪",
-        quick_reply_3: "BP2MI Regulation ⚖️",
-        audio_muted_title: "Enable Exhibition Audio",
-        audio_playing_title: "Mute Background Sound",
-        alert_missing_fields: "Please fill in your Full Name and WhatsApp Number first!",
-        wa_message_header: "Hello Migrant Worker Exhibition Admin,\n\nI'd like to register/consult about:\n👉 *Program:* ",
-        wa_message_body: "\n\nHere is my profile details:\n• *Name:* ",
-        wa_message_phone: "\n• *WhatsApp:* ",
-        wa_message_notes: "\n• *Additional Inquiries:* ",
-        wa_message_footer: "\n\nThank you. Please advise on the next steps.",
-
-        // Chat Responses
+        btn_close: "Close",
+        btn_register: "Register / Free Consultation",
+        form_title: "Vocational & Consultation Registration Form",
+        form_label_prog: "Selected Program (Auto):",
+        form_label_name: "Your Full Name:",
+        form_label_phone: "Active WhatsApp Number:",
+        form_label_notes: "Additional Notes or Questions (Optional):",
+        form_placeholder_name: "E.g., John Doe",
+        form_placeholder_phone: "E.g., +628123456789",
+        form_placeholder_notes: "Enter your questions here...",
+        form_btn_back: "Back",
+        form_btn_submit: "Submit Data",
+        alert_missing_fields: "Please fill in your Full Name and active WhatsApp Number first!",
+        success_title: "Registration Successfully Prepared!",
+        success_desc: "Click the green button below to submit your registration details directly to our Official Admin on WhatsApp:",
+        success_btn_wa: "Contact Admin on WhatsApp",
+        success_btn_finish: "Done & Close",
+        chat_header_subtitle: "Official Information Desk (BP2MI)",
+        chat_welcome: "Hello! Welcome to the Indonesian Migrant Worker Protection Exhibition. Do you have any questions regarding vocational programs or overseas job placements?",
+        chat_placeholder: "Type message...",
+        chat_btn_send: "Send",
+        chat_reply_japan_magang: "Japan Internship 🇯🇵",
+        chat_reply_germany_med: "Germany Nurse 🇩🇪",
+        chat_reply_bp2mi_rules: "Official Regulations",
+        wa_message_header: "Hello Migrant Worker Exhibition Admin,\\n\\nI would like to register/consult regarding:\\n👉 *Program:* ",
+        wa_message_body: "\\n\\nHere is my details:\\n• *Name:* ",
+        wa_message_phone: "\\n• *WhatsApp No:* ",
+        wa_message_notes: "\\n• *Additional Notes:* ",
+        wa_message_footer: "\\n\\nThank you. Please let me know the next steps.",
+        bot_chat_wa_invite: "\\n\\nContact admin via WhatsApp now: https://wa.me/",
         bot_response_japan: "Absolutely! We offer Japan Internship & Special Japanese/Compliance Courses for Specified Skilled Worker (SSW) routes through LPK-CIS, Hama Work Solution (HWS), and J'Path Center. You can read their brochures in their respective booths or sign up for a consultation.",
-        bot_response_germany: "Yes, professional medical placements (nursing) to Germany and the Middle East are handled by Binawan Inti Utama, with 49 years of leading experience. Please head over to Binawan's Booth via portals or the radar to see scholarship details.",
-        bot_response_bp2mi: "Official registration for Indonesian Migrant Workers (CPMI) must comply with BP2MI standards to ensure safety from illegal placements. We highly recommend filling out the consultation form at the Service Clinic in the Main Lobby to be contacted directly.",
-        bot_response_fallback: "Thank you for your question. If you want to discuss directly with our official officers regarding safe and secure placements, you can chat with our Official WhatsApp Administrator.",
-        bot_chat_wa_invite: "\n\nContact admin via WA: https://wa.me/"
+        bot_response_germany: "Yes, placements for professional healthcare workers (Registered Nurses) to Germany and the Middle East are facilitated by Binawan Inti Utama, with 49 years of leading experience. Please visit the Binawan Booth to explore scholarship details.",
+        bot_response_bp2mi: "Official registration for Indonesian Migrant Workers must comply with BP2MI standards to ensure safe, legal, and zero-fee placements. We highly recommend completing the consultation form at the Main Lobby's Service Clinic.",
+        bot_response_fallback: "Thank you for your message. If you want to discuss directly with our staff about secure placements, please click the link to reach our WhatsApp Admin."
       },
       jp: {
-        hud_loading: "展示会を読み込んでいます...",
         nav_instructions: "<strong>操作ガイド:</strong><br>• マウスドラッグ(PC)またはスマホを動かして360°見渡せます。<br>• <span style='color:#00FFCC; font-weight:bold;'>緑色</span>のポータル/右下の<span style='color:#00FFCC; font-weight:bold;'>レーダー</span>をタップしてブース移動。<br>• <span style='color:#FFCC00; font-weight:bold;'>黄色 (案内)</span> or <span style='color:#FF3366; font-weight:bold;'>ピンク (動画)</span> のホットスポットをクリック。",
-        chat_header: "オンライン案内デスク",
-        chat_subheader: "公式相談窓口 (BP2MI)",
-        chat_placeholder: "メッセージを入力してください...",
-        chat_send: "送信",
-        chat_welcome: "こんにちは！インドネシア技能実習生・特定技能就労保護展示会へようこそ。職業訓練プログラムや海外就職についてご質問はございますか？",
-        form_title: "就業・教育プログラム参加申込書",
-        form_program_label: "選択されたプログラム (自動入力):",
-        form_name_label: "お名前 (フルネーム):",
-        form_name_placeholder: "例：山田 太郎",
-        form_phone_label: "有効なWhatsApp番号:",
-        form_phone_placeholder: "例：+819012345678",
-        form_notes_label: "ご質問・ご要望 (任意):",
-        form_notes_placeholder: "ここにお問い合わせ内容をご記入ください...",
-        form_back_btn: "戻る",
-        form_submit_btn: "情報を送信する",
-        success_title: "仮登録が完了しました！",
-        success_desc: "以下の緑色のボタンをクリックして、登録詳細を公式WhatsApp管理者に直接送信してください:",
-        success_wa_btn: "WhatsAppで管理者に問い合わせる",
-        success_close_btn: "完了して閉じる",
-        close_btn: "閉じる",
-        register_btn: "プログラムに申し込む / 相談する",
-        radar_lobi: "ロビー",
-        hotspot_info_label: "ℹ パンフレットを見る",
-        hotspot_video_label: "▶ 紹介動画を再生",
-        quick_reply_1: "日本実習プログラム 🇯🇵",
-        quick_reply_2: "ドイツ看護師 🇩🇪",
-        quick_reply_3: "BP2MI規制基準 ⚖️",
-        audio_muted_title: "ブース音声オン",
-        audio_playing_title: "音声をオフにする",
-        alert_missing_fields: "お名前とWhatsApp番号を入力してください！",
-        wa_message_header: "実習生展示会管理者様、\n\n以下のプログラムについて応募・相談を希望します:\n👉 *希望プログラム:* ",
-        wa_message_body: "\n\n私のプロフィール詳細は以下の通りです:\n• *氏名:* ",
-        wa_message_phone: "\n• *WhatsApp番号:* ",
-        wa_message_notes: "\n• *お問い合わせ・備考:* ",
-        wa_message_footer: "\n\nよろしくお願いいたします。今後の手続きについてご案内ください。",
-
-        // Chat Responses
+        btn_close: "閉じる",
+        btn_register: "プログラムに申し込む / 相談する",
+        form_title: "プログラムお申込み ＆ 無料相談フォーム",
+        form_label_prog: "選択されたプログラム (自動入力):",
+        form_label_name: "お名前 (フルネーム):",
+        form_label_phone: "有効なWhatsApp番号:",
+        form_label_notes: "ご質問・ご要望 (任意):",
+        form_placeholder_name: "例：山田 太郎",
+        form_placeholder_phone: "例：+819012345678",
+        form_placeholder_notes: "ご質問等を入力してください...",
+        form_btn_back: "戻る",
+        form_btn_submit: "データを送信する",
+        alert_missing_fields: "お名前と有効なWhatsApp番号をご入力ください！",
+        success_title: "登録データの作成が完了しました！",
+        success_desc: "下の緑色のボタンをクリックして、登録内容を公式事務局のWhatsApp窓口に直接送信してください：",
+        success_btn_wa: "WhatsAppで事務局に連絡する",
+        success_btn_finish: "完了 ＆ 閉じる",
+        chat_header_subtitle: "BP2MI 公式情報窓口",
+        chat_welcome: "こんにちは！インドネシア移民労働者保護省公式バーチャル展示会へようこそ。技能実習、特定技能（SSW）、その他海外就労支援についてのご質問はありますか？",
+        chat_placeholder: "メッセージを入力...",
+        chat_btn_send: "送信",
+        chat_reply_japan_magang: "日本技能実習 🇯🇵",
+        chat_reply_germany_med: "ドイツ看護師 🇩🇪",
+        chat_reply_bp2mi_rules: "BP2MI公式法規ガイド",
+        wa_message_header: "移民労働者展示会管理者様、\\n\\n以下のプログラムへの応募・面談を希望します：\\n👉 *プログラム:* ",
+        wa_message_body: "\\n\\n応募者のプロフィール：\\n• *氏名:* ",
+        wa_message_phone: "\\n• *WhatsApp番号:* ",
+        wa_message_notes: "\\n• *特記事項・質問:* ",
+        wa_message_footer: "\\n\\nよろしくお願いいたします。今後のステップについてご連絡をお待ちしております。",
+        bot_chat_wa_invite: "\\n\\n今すぐWhatsAppで担当者に相談する: https://wa.me/",
         bot_response_japan: "はい！LPK-CIS、Hama Work Solution（HWS）、J'Path Centerを通じて、日本での技能実習制度および特定技能就労（SSW）向けの集中日本語・適応教育プログラムを提供しています。各ブースでパンフレットをご覧になるか、個別面談に今すぐご応募ください。",
-        bot_response_germany: "はい、ドイツや中東への医療従事者（看護師）の専門派遣は、49年の歴史と実績を持つBinawan Inti Utamaが担当しています。右下のレーダーかポータルから「Binawan」ブースへ移動し、詳細をご確認ください。",
-        bot_response_bp2mi: "インドネシア人労働者の公式海外派遣登録は、違法な手数料搾取を防ぐため、BP2MI（保護庁）の基準を厳守して行われます。メインロビーの相談窓口「Klinik Layanan」の申込フォームよりお気軽にご相談ください。",
-        bot_response_fallback: "ご質問ありがとうございます。安全な海外派遣および労働保護についてご不明な点がございましたら、いつでも公式のWhatsApp相談窓口にて直接個別対応いたします。",
-        bot_chat_wa_invite: "\n\nWAで管理者と直接話す: https://wa.me/"
+        bot_response_germany: "はい、ドイツおよび中東向けの専門医療従事者（正看護師）の派遣は、49年の確かな歴史を持つ「Binawan Inti Utama」が担っています。右下のレーダーまたはポータルからBinawanブースを訪れ、無償奨学金制度の詳細をご確認ください。",
+        bot_response_bp2mi: "インドネシアからの就労希望者の公的登録 is、違法な費用を排除し安全なプロセスを保証するBP2MIの正規基準に準拠する必要があります。まずはメインロビーの「相談窓口コーナー」の予約フォームをご記入いただくことをお勧めします。",
+        bot_response_fallback: "メッセージをいただきありがとうございます。安全な海外就職活動に関し、直接担当窓口と対話をご希望の場合は、公式WhatsAppリンクボタンをクリックしてチャットを開始してください。"
       }
     };
 
-        // ==========================================
+    // ==========================================
     // SCRIPT BARU: ZOOM CONTROLS (SCROLL MOUSE)
     // ==========================================
     AFRAME.registerComponent('zoom-controls', {
@@ -813,7 +779,6 @@
 
           var chatWin = document.getElementById('chat-window');
           if (chatWin && chatWin.style.display === 'flex') {
-            // Cek jika mouse berada di atas chat window
             var rect = chatWin.getBoundingClientRect();
             if (event.clientX >= rect.left && event.clientX <= rect.right &&
                 event.clientY >= rect.top && event.clientY <= rect.bottom) {
@@ -826,20 +791,19 @@
             var cameraAttr = cameraEl.getAttribute('camera') || { fov: 80 };
             var currentFov = cameraAttr.fov || 80;
 
-            // Mengatur sensitivitas zoom berdasarkan pergerakan scroll wheel
             var zoomSensitivity = 0.04;
             var newFov = currentFov + (event.deltaY * zoomSensitivity);
 
-            // Batasi FOV
             newFov = Math.max(self.minFov, Math.min(self.maxFov, newFov));
-
             cameraEl.setAttribute('camera', 'fov', newFov);
           }
         });
       }
     });
 
-    // 1. Komponen Registrasi Hotspot Informasi & Video 3D (Multilingual Enabled)
+    // ==========================================
+    // SCRIPT C: HOTSPOT & PORTAL SYSTEM (A-FRAME)
+    // ==========================================
     AFRAME.registerComponent('info-hotspot', {
       schema: {
         titleId: { type: 'string' }, // Kode ID lokalisasi judul
@@ -889,12 +853,68 @@
       }
     });
 
-    // 2. Logika Pengelola Navigasi Booth Terintegrasi (Multilingual Enabled State Manager)
     AFRAME.registerComponent('booth-manager', {
       init: function () {
         this.currentScene = 'kementerian';
 
-        // Pangkalan data multi-bahasa terstruktur untuk portal navigasi dan deskripsi booth
+        // Database lokalisasi khusus untuk Hotspots Brosur & Video
+        this.hotspotTranslations = {
+          id: {
+            hotspot_kementerian_info: "Klinik Layanan & Regulasi BP2MI",
+            desc_kementerian_info: "<strong>Layanan Terpadu Satu Atap (LTSA):</strong> Menyediakan informasi perlindungan hukum, sosial, dan ekonomi bagi seluruh Calon Pekerja Migran Indonesia (CPMI). Di lobi ini, Anda dapat mendaftar sesi konsultasi mengenai standar etika kerja internasional dan regulasi resmi bebas calo.",
+            hotspot_kementerian_video: "Video Profil Perlindungan Pekerja Migran",
+            desc_kementerian_video: "Saksikan bagaimana Kementerian Perlindungan Pekerja Migran Indonesia (BP2MI) merevolusi tata kelola penempatan kerja yang aman, bermartabat, dan transparan.",
+            hotspot_binawan_info: "Program Sertifikasi & Pelatihan Kesehatan Internasional",
+            desc_binawan_info: "<strong>Peluang Karir Perawat di Jerman & Timur Tengah:</strong> Binawan memfasilitasi program pelatihan bahasa asing intensif, penyetaraan lisensi keperawatan (RN), dan penempatan langsung ke rumah sakit besar di Jerman, Arab Saudi, dan UEA.",
+            hotspot_hamawork_info: "Program Magang Konstruksi & Industri Pengolahan Jepang",
+            desc_hamawork_info: "<strong>Magang Resmi (Internship):</strong> Bekerja sama dengan asosiasi industri (Inwardis) di Jepang, HWS merekrut talenta muda terampil di bidang manufaktur makanan, pengemasan, dan konstruksi bangunan dengan standar upah regional Jepang.",
+            hotspot_hamawork_video: "Video Testimoni Alumni Magang HWS",
+            desc_hamawork_video: "Dengarkan cerita sukses dari para pekerja migran terampil asal Indonesia yang berhasil meningkatkan taraf hidup mereka selama magang bersama HWS.",
+            hotspot_jpath_info: "Beasiswa Sekolah Bahasa & Jalur Kerja SSW Jepang",
+            desc_jpath_info: "<strong>Kelas Khusus Beasiswa & SSW (Specified Skilled Worker):</strong> J'Path Center melatih secara intensif penguasaan bahasa Jepang dari dasar hingga tingkat ujian JLPT N4, penyetaraan ujian kompetensi bidang (kaigo, f&b), serta pembuatan visa tinggal kerja tetap.",
+            hotspot_lpkcis_info: "Pelatihan Bahasa Jepang & Budaya Industri",
+            desc_lpkcis_info: "<strong>Sending Organization Terakreditasi:</strong> CIS fokus pada pembentukan disiplin kerja ala Jepang (Kaizen, 5S). Program ini ditujukan agar peserta siap beradaptasi dan lolos verifikasi kepatuhan hukum (*Japanese Compliance*) di tempat kerja baru.",
+            hotspot_maharani_info: "Layanan Keberangkatan & Logistik Pekerja Mandiri",
+            desc_maharani_info: "<strong>Logistik Handal & Sektor Formal:</strong> Maharani Tri Utama Mandiri melayani rekrutmen terpadu, penyusunan visa resmi, verifikasi asuransi ketenagakerjaan, hingga layanan pendampingan imigrasi di bandara."
+          },
+          en: {
+            hotspot_kementerian_info: "BP2MI Integrated Services & Regulation Clinic",
+            desc_kementerian_info: "<strong>One-Stop Integrated Service (LTSA):</strong> Providing comprehensive legal, social, and economic protection frameworks for all Indonesian Candidates of Migrant Workers (CPMI). Register here to consult with legal officers.",
+            hotspot_kementerian_video: "Migrant Worker Protection Profile Video",
+            desc_kementerian_video: "Watch how the Ministry of Indonesian Migrant Worker Protection (BP2MI) is reforming recruitment pathways to protect workers with dignity and complete transparency.",
+            hotspot_binawan_info: "Healthcare International Training & Licensing Program",
+            desc_binawan_info: "<strong>Registered Nurse Careers in Germany & Middle East:</strong> Binawan offers fast-tracked language programs, licensing equivalency (RN exam preparation), and direct hospital placement in Germany, UAE, and Kuwait.",
+            hotspot_hamawork_info: "Japan Construction & Food Processing Internship",
+            desc_hamawork_info: "<strong>Official Internship:</strong> Partnering with top Japanese business associations (Inwardis), HWS recruits young local talents for manufacturing, packing, and civil works with full visa sponsorship and regional wages.",
+            hotspot_hamawork_video: "HWS Internship Alumni Testimonials",
+            desc_hamawork_video: "Hear directly from skilled young Indonesian workers about how their career and livelihood improved after training and working in Japan with HWS.",
+            hotspot_jpath_info: "Japanese Language Scholarship & Career Pathway (SSW)",
+            desc_jpath_info: "<strong>Scholarship & SSW Track:</strong> J'Path Center manages intensive language classes to pass JLPT N4, specialized vocational examination prep (caregiving, food services), and resident visa facilitation for immediate Japanese employment.",
+            hotspot_lpkcis_info: "Japanese Compliance & Industrial Adaptation Course",
+            desc_lpkcis_info: "<strong>Accredited Sending Organization:</strong> CIS specializes in building Japanese work ethics (Kaizen, 5S) and rigorous legal compliance training, preparing candidates to smoothly blend into the strict Japanese corporate environment.",
+            hotspot_maharani_info: "Formal Sector Placement & Airport Logistics Support",
+            desc_maharani_info: "<strong>Reliable Logistical Solutions:</strong> Maharani Tri Utama Mandiri manages certified recruitment, employment insurance verification, visa clearance, and administrative departure support."
+          },
+          jp: {
+            hotspot_kementerian_info: "BP2MI公式ワンストップ相談・行政手続きコーナー",
+            desc_kementerian_info: "<strong>ワンストップ統合サービス (LTSA):</strong> インドネシア人海外就労希望者（CPMI）の権利擁護に向け、法的・社会的・経済的サポート体制を整備。行政官との無料相談を受け付けています。",
+            hotspot_kementerian_video: "海外労働者擁護・BP2MI紹介ビデオ",
+            desc_kementerian_video: "安全かつ尊厳ある合法的就労の実現、不当手数料の排除に挑む労働者保護省（BP2MI）の最新取組をご覧ください。",
+            hotspot_binawan_info: "ドイツ・中東看護師国家資格・現地就職プラン",
+            desc_binawan_info: "<strong>ドイツ・中東の看護師採用:</strong> 49年の歴史を有するBinawanグループが、現地語（ドイツ語等）の徹底指導、看護師免許書換（RN）対策、主要総合病院への配属を完全一貫サポートします。",
+            hotspot_hamawork_info: "日本建設・食品加工技能実習プログラム募集案内",
+            desc_hamawork_info: "<strong>正規技能実習（インターンシップ）:</strong> 日本大手監理団体（インワーディス）の現地独占窓口として、食品製造、建設、農業分野を対象に、ビザ手続き完備かつ地域標準給与保証で若者を募っています。",
+            hotspot_hamawork_video: "HWS技能実習修了生の体験談インタビュー",
+            desc_hamawork_video: "HWSを利用して日本に渡った実習生たちが、現地でどのような技術を磨き、キャリアと生活設計を向上させたかを自ら語る成功秘話。",
+            hotspot_jpath_info: "日本語教育無償奨学金・特定技能（SSW）就労プラン",
+            desc_jpath_info: "<strong>特定技能＆日本語留学制度:</strong> JLPT N4相当の語学試験、特定技能評価試験（介護、外食、農業等）への合格に向けた徹底対策を指導。在留資格申請手続きのサポートを行い、日本での就労開始を実現します。",
+            hotspot_lpkcis_info: "日本語学習 ＆ 日本式産業マナー・カイゼン教育",
+            desc_lpkcis_info: "<strong>認定送り出し機関:</strong> LPK-CISは、徹底した規律とマナー教育（カイゼン、整理整頓など）に特化し、就労後の速やかな現場定着、受け入れ企業の高いコンプライアンス要求に応えます。",
+            hotspot_maharani_info: "フォーマル分野派遣・出国管理 ＆ 空港支援ソリューション",
+            desc_maharani_info: "<strong>安心・安全な物流サポート:</strong> PT Maharani Tri Utama Mandiriは、募集から出国ビザの手配、労災保険認証、日本の主要空港での出迎えから現地アテンドまで一貫して請け負います。"
+          }
+        };
+
         this.scenes = {
           kementerian: {
             title: {
@@ -930,10 +950,10 @@
             title: {
               id: "Booth Binawan Inti Utama",
               en: "Binawan Inti Utama Booth",
-              jp: "ビナワン・インティ・ウタマ展示ブース"
+              jp: "株式会社ビナワン・インティ・ウタマ展示ブース"
             },
             portals: [
-              { target: 'kementerian', label: 'Lobby', pos: '4 1.2 -8', rot: '0 -25 0' },
+              { target: 'kementerian', label: 'Kembali ke Lobi (BP2MI)', pos: '4 1.2 -8', rot: '0 -25 0' },
               { target: 'hamawork', label: 'Hama Work Solution', pos: '-6 1.2 -6', rot: '0 45 0' },
               { target: 'maharani', label: 'PT Maharani Tri Utama', pos: '0 1.2 8', rot: '0 180 0' }
             ],
@@ -942,7 +962,7 @@
                 titleId: "hotspot_binawan_info",
                 type: "brochure",
                 pos: "-3.5 1.0 -4",
-                programId: "Nurse Placement (Germany & ME) - Binawan",
+                programId: "Sertifikasi Perawat Internasional - Binawan",
                 contentId: "desc_binawan_info"
               }
             ]
@@ -951,10 +971,10 @@
             title: {
               id: "Booth Hama Work Solution (HWS)",
               en: "Hama Work Solution (HWS) Booth",
-              jp: "ハマ・ワーク・ソリューション (HWS) 展示ブース"
+              jp: "株式会社ハマー・ワーク・ソリューション（HWS）"
             },
             portals: [
-              { target: 'kementerian', label: 'Lobby', pos: '8 1.2 -3', rot: '0 -70 0' },
+              { target: 'kementerian', label: 'Kembali ke Lobi (BP2MI)', pos: '8 1.2 -3', rot: '0 -70 0' },
               { target: 'binawan', label: 'Binawan Inti Utama', pos: '6 1.2 -6', rot: '0 -45 0' },
               { target: 'lpkcis', label: 'LPK-CIS Training Center', pos: '-6 1.2 -6', rot: '0 45 0' }
             ],
@@ -963,7 +983,7 @@
                 titleId: "hotspot_hamawork_info",
                 type: "brochure",
                 pos: "3.5 1.0 -4",
-                programId: "Japan Technical Intern Program - HWS",
+                programId: "Program Magang Jepang - HWS",
                 contentId: "desc_hamawork_info"
               },
               {
@@ -979,10 +999,10 @@
             title: {
               id: "Booth J'Path Center",
               en: "J'Path Center Booth",
-              jp: "ジェイパス・センター就職・教育ブース"
+              jp: "ジェイパス日本語・送り出し機関センター"
             },
             portals: [
-              { target: 'kementerian', label: 'Lobby', pos: '-4 1.2 -8', rot: '0 25 0' },
+              { target: 'kementerian', label: 'Kembali ke Lobi (BP2MI)', pos: '-4 1.2 -8', rot: '0 25 0' },
               { target: 'lpkcis', label: 'LPK-CIS Training Center', pos: '6 1.2 -6', rot: '0 -45 0' },
               { target: 'maharani', label: 'PT Maharani Tri Utama', pos: '0 1.2 8', rot: '0 180 0' }
             ],
@@ -999,11 +1019,11 @@
           lpkcis: {
             title: {
               id: "Booth LPK-CIS Japanese Training Center",
-              en: "LPK-CIS Japanese Language Center",
-              jp: "LPK-CIS日本語教育・派遣センター"
+              en: "LPK-CIS Japanese Training Center Booth",
+              jp: "LPK-CIS 日本語・送出教育訓練センター"
             },
             portals: [
-              { target: 'kementerian', label: 'Lobby', pos: '-8 1.2 -3', rot: '0 70 0' },
+              { target: 'kementerian', label: 'Kembali ke Lobi (BP2MI)', pos: '-8 1.2 -3', rot: '0 70 0' },
               { target: 'jpath', label: "J'Path Center", pos: '-6 1.2 -6', rot: '0 45 0' },
               { target: 'hamawork', label: 'Hama Work Solution', pos: '6 1.2 -6', rot: '0 -45 0' }
             ],
@@ -1012,7 +1032,7 @@
                 titleId: "hotspot_lpkcis_info",
                 type: "brochure",
                 pos: "3.5 1.0 -4",
-                programId: "Japanese Compliance & Language - CIS",
+                programId: "Kelas Bahasa & Kepatuhan Kerja - LPK CIS",
                 contentId: "desc_lpkcis_info"
               }
             ]
@@ -1021,10 +1041,10 @@
             title: {
               id: "Booth PT Maharani Tri Utama Mandiri",
               en: "PT Maharani Tri Utama Mandiri Booth",
-              jp: "PT マハラニ・トリ・ウタマ展示ブース"
+              jp: "マハラニ・トリ・ウタマ・マンディリ労働派遣企業"
             },
             portals: [
-              { target: 'kementerian', label: 'Lobby', pos: '0 1.2 -8', rot: '0 0 0' },
+              { target: 'kementerian', label: 'Kembali ke Lobi (BP2MI)', pos: '0 1.2 -8', rot: '0 0 0' },
               { target: 'binawan', label: 'Binawan Inti Utama', pos: '6 1.2 -6', rot: '0 -45 0' },
               { target: 'jpath', label: "J'Path Center", pos: '-6 1.2 -6', rot: '0 45 0' }
             ],
@@ -1033,90 +1053,16 @@
                 titleId: "hotspot_maharani_info",
                 type: "brochure",
                 pos: "3.5 1.0 -4",
-                programId: "Logistics & Formal Sector - PT Maharani",
+                programId: "Layanan Logistik & Penempatan - PT Maharani",
                 contentId: "desc_maharani_info"
               }
             ]
           }
         };
 
-        // Database Teks Hotspot Khusus yang dilokalisasikan
-        this.hotspotTranslations = {
-          id: {
-            hotspot_kementerian_info: "Klinik Layanan & Regulasi BP2MI",
-            desc_kementerian_info: "<strong>Layanan Terpadu Satu Atap (LTSA):</strong> Menyediakan informasi perlindungan hukum, sosial, dan ekonomi bagi seluruh Calon Pekerja Migran Indonesia (CPMI). Di lobi ini, Anda dapat mendaftar sesi konsultasi mengenai standar etika kerja internasional dan regulasi resmi bebas calo.",
-            hotspot_kementerian_video: "Video Profil Perlindungan Pekerja Migran",
-            desc_kementerian_video: "Saksikan bagaimana Kementerian Perlindungan Pekerja Migran Indonesia (BP2MI) merevolusi tata kelola penempatan kerja yang aman, bermartabat, dan transparan.",
-
-            hotspot_binawan_info: "Program Sertifikasi & Pelatihan Kesehatan Internasional",
-            desc_binawan_info: "<strong>Peluang Karir Perawat di Jerman & Timur Tengah:</strong> Binawan memfasilitasi program pelatihan bahasa asing intensif, penyetaraan lisensi keperawatan (RN), dan penempatan langsung ke rumah sakit besar di Jerman, Arab Saudi, dan UEA.",
-
-            hotspot_hamawork_info: "Program Magang Konstruksi & Industri Pengolahan Jepang",
-            desc_hamawork_info: "<strong>Magang Resmi (Internship):</strong> Bekerja sama dengan asosiasi industri (Inwardis) di Jepang, HWS merekrut talenta muda terampil di bidang manufaktur makanan, pengemasan, dan konstruksi bangunan dengan standar upah regional Jepang.",
-            hotspot_hamawork_video: "Video Testimoni Alumni Magang HWS",
-            desc_hamawork_video: "Dengarkan cerita sukses dari para pekerja migran terampil asal Indonesia yang berhasil meningkatkan taraf hidup mereka selama magang bersama HWS.",
-
-            hotspot_jpath_info: "Beasiswa Sekolah Bahasa & Jalur Kerja SSW Jepang",
-            desc_jpath_info: "<strong>Kelas Khusus Beasiswa & SSW (Specified Skilled Worker):</strong> J'Path Center melatih secara intensif penguasaan bahasa Jepang dari dasar hingga tingkat ujian JLPT N4, penyetaraan ujian kompetensi bidang (kaigo, f&b), serta pembuatan visa tinggal kerja tetap.",
-
-            hotspot_lpkcis_info: "Pelatihan Bahasa Jepang & Budaya Industri",
-            desc_lpkcis_info: "<strong>Sending Organization Terakreditasi:</strong> CIS fokus pada pembentukan disiplin kerja ala Jepang (Kaizen, 5S). Program ini ditujukan agar peserta siap beradaptasi dan lolos verifikasi kepatuhan hukum (*Japanese Compliance*) di tempat kerja baru.",
-
-            hotspot_maharani_info: "Layanan Keberangkatan & Logistik Pekerja Mandiri",
-            desc_maharani_info: "<strong>Logistik Handal & Perlindungan Sektor Formal:</strong> Maharani Tri Utama Mandiri melayani rekrutmen terpadu, penyusunan visa resmi, verifikasi asuransi ketenagakerjaan, hingga layanan pendampingan imigrasi di bandara."
-          },
-          en: {
-            hotspot_kementerian_info: "BP2MI Service Clinic & Regulations",
-            desc_kementerian_info: "<strong>One-Stop Integrated Service (LTSA):</strong> Provides complete legal, social, and economic protection frameworks for prospective workers (CPMI). Here, you can sign up for consultations on global ethical working standards and official fee-free regulation pathways.",
-            hotspot_kementerian_video: "Migrant Worker Welfare Profile Video",
-            desc_kementerian_video: "See how the Ministry of Indonesian Migrant Worker Protection (BP2MI) completely revolutionizes secure, prestigious, and corruption-free international career placements.",
-
-            hotspot_binawan_info: "International Healthcare Training & Licensing Program",
-            desc_binawan_info: "<strong>Registered Nurse Careers in Germany & Middle East:</strong> Binawan offers intensive foreign language academies, RN license bridge programs, and direct placements to premium clinical networks across Germany, Saudi Arabia, and UAE.",
-
-            hotspot_hamawork_info: "Japan Industrial Processing & Construction Internship",
-            desc_hamawork_info: "<strong>Official Technical Internships:</strong> Partnered with Japanese industrial trade unions (Inwardis), HWS recruits and prepares skilled youths for food processing, packing, and construction projects under strict regional labor regulations.",
-            hotspot_hamawork_video: "HWS Internship Alumni Testimonial",
-            desc_hamawork_video: "Listen to the inspiring success stories of Indonesian skilled workers who raised their standard of living and expertise while interning abroad with Hama Work Solution.",
-
-            hotspot_jpath_info: "Japanese Language Scholarship & Career Pathway (SSW)",
-            desc_jpath_info: "<strong>Scholarship & SSW Track:</strong> J'Path Center manages intensive language classes to pass JLPT N4, specialized vocational examination prep (caregiving, food services), and resident visa facilitation for immediate Japanese employment.",
-
-            hotspot_lpkcis_info: "Japanese Language & Professional Compliance Training",
-            desc_lpkcis_info: "<strong>Accredited Sending Organization:</strong> CIS specializes in structuring work ethics modeled directly after the Japanese corporate culture (Kaizen, 5S). Ensures candidate readiness to comply fully with legal and workplace norms (*Japanese Compliance*).",
-
-            hotspot_maharani_info: "Deployment Operations & Formal Sector Logistics",
-            desc_maharani_info: "<strong>Reliable Placement Solutions:</strong> PT Maharani Tri Utama Mandiri specializes in formal corporate recruitment, secure visa procurement, official labor insurance registration, and airport transit logistics support."
-          },
-          jp: {
-            hotspot_kementerian_info: "BP2MI公式相談窓口・法的保護規準ガイド",
-            desc_kementerian_info: "<strong>ワンストップ統合サービス (LTSA):</strong> インドネシア人海外派遣労働者候補（CPMI）に対し、完全な法的保護、社会、経済支援スキームを提供します。クリーンで安心、ブローカーを排除した公認就労ルートについてご相談いただけます。",
-            hotspot_kementerian_video: "移民労働者福祉公式プロモーション映像",
-            desc_kementerian_video: "インドネシア移民労働者保護省 (BP2MI) が主導する、クリーンで透明、そして尊厳あるグローバル就労エコシステムの取り組みをご覧ください。",
-
-            hotspot_binawan_info: "医療・看護分野グローバルライセンス取得支援",
-            desc_binawan_info: "<strong>ドイツおよび中東での看護師募集:</strong> 49年の歴史を有するビナワンは、語学集中スクール、海外看護師資格（RN）書換支援、ドイツ・サウジアラビア・アラブ首長国連邦の主要病院ネットワークへの直結就職プランを運営しています。",
-
-            hotspot_hamawork_info: "日本 建設・食品加工・梱包 技術実習生養成プラン",
-            desc_hamawork_info: "<strong>公認技能実習制度:</strong> 日本の監理団体や受入企業（インワーディス）と提携し、食品加工、包装、建設現場などの専門分野へ派遣。日本の最低賃金法および各種法令に完全準拠して行われます。",
-            hotspot_hamawork_video: "実習修了帰国生サクセスストーリー紹介",
-            desc_hamawork_video: "Hama Work Solution（HWS）の実習プログラムを通じて、日本での就業体験と専門技術を活かし、輝かしいキャリアを掴んだ修了生の声をお届けします。",
-
-            hotspot_jpath_info: "日本語教育無償奨学金・特定技能（SSW）就労プラン",
-            desc_jpath_info: "<strong>特定技能＆日本語留学制度:</strong> JLPT N4相当の語学試験、特定技能評価試験（介護、外食、農業等）への合格に向けた徹底対策を指導。在留資格申請手続きのサポートを行い、日本での就労開始を実現します。",
-
-            hotspot_lpkcis_info: "日本語スキル習得・日系企業ビジネスコンプライアンス",
-            desc_lpkcis_info: "<strong>認定送り出し機関 (SO):</strong> 5S/カイゼンに代表される日本独自の就労規律と専門ビジネスマナーを養成。法令遵守と労働慣行（日本のコンプライアンス）に完全に適応できる人材を育てます。",
-
-            hotspot_maharani_info: "公式海外派遣手続き・出国帰国ロジスティクス支援",
-            desc_maharani_info: "<strong>確実な就労・物流ソリューション:</strong> PT Maharani Tri Utama Mandiriは、実務求人の管理、正式就労ビザの手続き、公的な労働保険の加入、さらには空港送迎など出国から帰国までのプロセスを一貫してサポートします。"
-          }
-        };
-
         this.renderElements();
       },
 
-      // Fungsi transisi visual layar meredup halus saat berpindah booth
       switchScene: function(target) {
         var sky = document.querySelector('#image-360');
         var self = this;
@@ -1152,7 +1098,6 @@
         }, 300);
       },
 
-      // Menggambar Portal Navigasi, Hotspot Informasi, dan Sinkronisasi Minimap
       renderElements: function() {
         var portalContainer = document.querySelector('#portal-container');
         var hotspotContainer = document.querySelector('#hotspot-container');
@@ -1163,13 +1108,11 @@
         var data = this.scenes[this.currentScene];
         if (!data) return;
 
-        // Update Teks HUD di dalam VR (Sesuaikan dengan Bahasa yang Aktif)
         var hudText = document.querySelector('#hud-title');
         if (hudText) {
-          hudText.setAttribute('value', data.title[currentLanguage] || data.title['id']);
+          hudText.setAttribute('value', data.title[currentLanguage]);
         }
 
-        // Sinkronisasi Indikator Aktif di Radar Minimap (HUD Layar)
         document.querySelectorAll('.radar-node').forEach(function(node) {
           node.classList.remove('active');
         });
@@ -1180,7 +1123,6 @@
 
         var self = this;
 
-        // 1. Gambar Portal Navigasi 3D (Warna Hijau Toska)
         data.portals.forEach(function(p) {
           var entity = document.createElement('a-entity');
           entity.setAttribute('position', p.pos);
@@ -1213,14 +1155,7 @@
           sphere.addEventListener('click', handler);
 
           var label = document.createElement('a-text');
-
-          // Nama portal disesuaikan (jika Lobby disesuaikan ke ID/EN/JP)
-          var displayLabel = p.label;
-          if (p.label.toLowerCase() === 'lobby') {
-            displayLabel = localization[currentLanguage].radar_lobi;
-          }
-
-          label.setAttribute('value', displayLabel);
+          label.setAttribute('value', p.label);
           label.setAttribute('align', 'center');
           label.setAttribute('position', '0 0.9 0');
           label.setAttribute('scale', '0.7 0.7 0.7');
@@ -1234,7 +1169,6 @@
           portalContainer.appendChild(entity);
         });
 
-        // 2. Gambar Hotspot Informasi / Brosur & Video (Mengambil Teks Sesuai Bahasa)
         if (data.hotspots) {
           data.hotspots.forEach(function(h) {
             var entity = document.createElement('a-entity');
@@ -1253,10 +1187,6 @@
             interactionSphere.setAttribute('material', 'visible: false');
             interactionSphere.setAttribute('class', 'clickable');
 
-            // Integrasikan data terjemahan hotspot yang dinamis
-            var localizedTitle = self.hotspotTranslations[currentLanguage][h.titleId] || h.programId;
-            var localizedContent = self.hotspotTranslations[currentLanguage][h.contentId] || "";
-
             interactionSphere.setAttribute('info-hotspot', {
               titleId: h.titleId,
               type: h.type,
@@ -1266,9 +1196,8 @@
             });
 
             var label = document.createElement('a-text');
-            var labelText = h.type === 'video' ? localization[currentLanguage].hotspot_video_label : localization[currentLanguage].hotspot_info_label;
-
-            label.setAttribute('value', labelText);
+            var labelVal = h.type === 'video' ? (currentLanguage === 'jp' ? "▶ 紹介動画を再生" : (currentLanguage === 'en' ? "▶ PLAY VIDEO" : "▶ TONTON VIDEO")) : (currentLanguage === 'jp' ? "ℹ パンフレットを見る" : (currentLanguage === 'en' ? "ℹ INFO BROCHURE" : "ℹ INFO BROSUR"));
+            label.setAttribute('value', labelVal);
             label.setAttribute('align', 'center');
             label.setAttribute('position', '0 0.5 0');
             label.setAttribute('scale', '0.4 0.4 0.4');
@@ -1313,7 +1242,7 @@
   <!-- Tombol On/Off Suara Latar -->
   <button id="audio-control-btn" class="muted" onclick="toggleAudio()" title="Aktifkan Suara Pameran">🔇</button>
 
-  <!-- 3. Jendela Pop-up Informasi & Registrasi WhatsApp (Dinamis / Lokalisasi) -->
+  <!-- 3. Jendela Pop-up Informasi & Registrasi WhatsApp -->
   <div id="info-modal">
     <h2 id="modal-title">Judul Informasi</h2>
 
@@ -1322,12 +1251,11 @@
         <!-- Konten via JavaScript -->
       </div>
       <div style="width:100%; overflow:hidden;">
-        <button id="modal-close-btn-normal" class="close-btn" onclick="closeModal()">Tutup</button>
+        <button id="btn-modal-close" class="close-btn" onclick="closeModal()">Tutup</button>
         <button id="register-trigger-btn" class="register-btn" onclick="showRegistrationForm()">Daftar Program / Konsultasi</button>
       </div>
     </div>
 
-    <!-- Formulir Pendaftaran Terlokalisasi -->
     <div id="registration-form-container">
       <h3 id="form-header-title" style="color:#FF3366; margin-top:0; font-size:16px;">Formulir Pendaftaran Vokasi / Konsultasi</h3>
 
@@ -1371,12 +1299,12 @@
     </div>
   </div>
 
-  <!-- 4. Petunjuk Navigasi Mengambang di Kiri Bawah -->
-  <div id="instruction-panel" class="vr-instructions">
-    <!-- Konten Panduan diisi secara dinamis via JS sesuai bahasa -->
+  <!-- Petunjuk Navigasi Mengambang di Kiri Bawah -->
+  <div id="navigation-guide-text" class="vr-instructions">
+    <!-- Diisi secara dinamis melalui JavaScript sesuai bahasa terpilih -->
   </div>
 
-  <!-- 5. INTERACTIVE LIVE CHAT SYSTEM (KIRI BAWAH LAYAR) -->
+  <!-- 4. INTERACTIVE LIVE CHAT SYSTEM (KIRI BAWAH LAYAR) -->
   <div id="live-chat-container">
     <button id="chat-trigger-btn" onclick="toggleChatWindow()">
       <div class="chat-badge">1</div>
@@ -1390,34 +1318,31 @@
         <div class="chat-header-title">
           <div class="chat-status-dot"></div>
           <div>
-            <h4 id="chat-header-title-text">Sistem Layanan Pameran</h4>
-            <p id="chat-header-subtitle-text">Petugas Informasi Resmi (BP2MI)</p>
+            <h4 id="chat-header-main-title">Sistem Layanan Pameran</h4>
+            <p id="chat-header-sub-title">Petugas Informasi Resmi (BP2MI)</p>
           </div>
         </div>
         <button class="chat-close-btn" onclick="toggleChatWindow()">×</button>
       </div>
 
-      <!-- Area Pesan Obrolan -->
       <div id="chat-messages-area" class="chat-messages">
-        <!-- Diisi secara dinamis saat inisialisasi / bahasa berubah -->
+        <!-- Teks pembuka diatur dinamis lewat resetChatHistory() -->
       </div>
 
-      <!-- Quick Replies Buttons -->
-      <div id="quick-replies-area" class="quick-replies-container">
-        <button id="qr-btn-1" class="quick-reply-btn" onclick="sendQuickReply('Japan Internship')">Magang Jepang 🇯🇵</button>
-        <button id="qr-btn-2" class="quick-reply-btn" onclick="sendQuickReply('Germany Nurse')">Perawat Jerman 🇩🇪</button>
-        <button id="qr-btn-3" class="quick-reply-btn" onclick="sendQuickReply('BP2MI Regulation')">Regulasi Resmi BP2MI</button>
+      <div class="quick-replies-container">
+        <button id="btn-reply-japan" class="quick-reply-btn" onclick="sendQuickReply('japan')">Magang Jepang 🇯🇵</button>
+        <button id="btn-reply-germany" class="quick-reply-btn" onclick="sendQuickReply('germany')">Perawat Jerman 🇩🇪</button>
+        <button id="btn-reply-bp2mi" class="quick-reply-btn" onclick="sendQuickReply('bp2mi')">Regulasi BP2MI</button>
       </div>
 
-      <!-- Input Pesan -->
       <div class="chat-input-area">
-        <input type="text" id="chat-user-input" placeholder="Ketik pesan Anda di sini..." onkeypress="handleChatKeyPress(event)">
-        <button id="chat-send-btn-action" class="chat-send-btn" onclick="sendUserChatMessage()">Kirim</button>
+        <input type="text" id="chat-user-input" placeholder="Ketik pesan..." onkeypress="handleChatKeyPress(event)">
+        <button id="btn-chat-send" class="chat-send-btn" onclick="sendUserChatMessage()">Kirim</button>
       </div>
     </div>
   </div>
 
-  <!-- 6. INTERACTIVE HUD FLOOR PLAN / RADAR MINIMAP (KANAN BAWAH LAYAR) -->
+  <!-- INTERACTIVE HUD FLOOR PLAN / RADAR MINIMAP (KANAN BAWAH LAYAR) -->
   <div id="radar-minimap">
     <div class="radar-sweep"></div>
 
@@ -1430,7 +1355,7 @@
     </svg>
 
     <div id="node-kementerian" class="radar-node active" onclick="navigateTo('kementerian')"></div>
-    <div id="label-lobi" class="minimap-label" style="top:50%; left:50%;">LOBI</div>
+    <div class="minimap-label" style="top:50%; left:50%;">LOBI</div>
 
     <div id="node-binawan" class="radar-node" onclick="navigateTo('binawan')"></div>
     <div class="minimap-label" style="top:25%; left:30%;">BINAWAN</div>
@@ -1460,8 +1385,10 @@
       <img id="maharani" src="maharanitriv.jpg">
     </a-assets>
 
+    <!-- Kamera & Sistem Kontrol Sudut Pandang -->
     <a-entity position="0 0 0">
       <a-camera look-controls="pointerLockEnabled: false" camera="fov: 80" zoom-controls>
+        <!-- Judul Booth Aktif Mengikuti Arah Kamera -->
         <a-text id="hud-title" value="Memuat pameran..."
                 align="center" position="0 1.5 -3" scale="0.9 0.9 0.9" color="#00FFCC"
                 geometry="primitive: plane; width: 3.5; height: 0.4"
@@ -1471,78 +1398,68 @@
 
     <a-entity id="portal-container"></a-entity>
     <a-entity id="hotspot-container"></a-entity>
-    <a-sky id="image-360" radius="10" src="#kementerian"></a-sky>
+
+    <!-- KANVAS BOLA LANGIT PANORAMA 360 UTAMA (REVISI v11: position="0 1.2 0") -->
+    <!-- Menggeser bola ke atas setinggi 1.2 meter menurunkan posisi relatif kamera, menciptakan view sejajar mata manusia/manview -->
+    <a-sky id="image-360" radius="10" src="#kementerian" position="0 1.2 0"></a-sky>
 
   </a-scene>
 
   <script>
-    var currentProgramId = "";
-
     // ==========================================
-    // SCRIPT A: ENGINE LOKALISASI (MULTILINGUAL MANAGER)
+    // SCRIPT A: MULTILINGUAL & UI TRANSLATION
     // ==========================================
     function switchLanguage(lang) {
       if (!localization[lang]) return;
       currentLanguage = lang;
 
-      // Update status tombol navigasi bahasa
+      // 1. Update status aktif tombol
       document.querySelectorAll('.lang-btn').forEach(function(btn) {
         btn.classList.remove('active');
       });
       document.getElementById('btn-lang-' + lang).classList.add('active');
 
-      // 1. Terjemahkan elemen static HTML pada layar
-      document.getElementById('instruction-panel').innerHTML = localization[lang].nav_instructions;
-      document.getElementById('chat-header-title-text').innerText = localization[lang].chat_header;
-      document.getElementById('chat-header-subtitle-text').innerText = localization[lang].chat_subheader;
-      document.getElementById('chat-user-input').placeholder = localization[lang].chat_placeholder;
-      document.getElementById('chat-send-btn-action').innerText = localization[lang].chat_send;
+      // 2. Terjemahkan elemen-elemen teks statis pada UI Layar
+      var dict = localization[lang];
+      document.getElementById('navigation-guide-text').innerHTML = dict.nav_instructions;
+      document.getElementById('btn-modal-close').innerText = dict.btn_close;
+      document.getElementById('register-trigger-btn').innerText = dict.btn_register;
+      document.getElementById('form-header-title').innerText = dict.form_title;
+      document.getElementById('lbl-form-program').innerText = dict.form_label_prog;
+      document.getElementById('lbl-form-name').innerText = dict.form_label_name;
+      document.getElementById('lbl-form-phone').innerText = dict.form_label_phone;
+      document.getElementById('lbl-form-notes').innerText = dict.form_label_notes;
+      document.getElementById('form-name').setAttribute('placeholder', dict.form_placeholder_name);
+      document.getElementById('form-phone').setAttribute('placeholder', dict.form_placeholder_phone);
+      document.getElementById('form-notes').setAttribute('placeholder', dict.form_placeholder_notes);
+      document.getElementById('btn-form-back').innerText = dict.form_btn_back;
+      document.getElementById('btn-form-submit').innerText = dict.form_btn_submit;
 
-      document.getElementById('form-header-title').innerText = localization[lang].form_title;
-      document.getElementById('lbl-form-program').innerText = localization[lang].form_program_label;
-      document.getElementById('lbl-form-name').innerText = localization[lang].form_name_label;
-      document.getElementById('form-name').placeholder = localization[lang].form_name_placeholder;
-      document.getElementById('lbl-form-phone').innerText = localization[lang].form_phone_label;
-      document.getElementById('form-phone').placeholder = localization[lang].form_phone_placeholder;
-      document.getElementById('lbl-form-notes').innerText = localization[lang].form_notes_label;
-      document.getElementById('form-notes').placeholder = localization[lang].form_notes_placeholder;
-      document.getElementById('btn-form-back').innerText = localization[lang].form_back_btn;
-      document.getElementById('btn-form-submit').innerText = localization[lang].form_submit_btn;
+      document.getElementById('success-title-text').innerText = dict.success_title;
+      document.getElementById('success-desc-text').innerText = dict.success_desc;
+      document.getElementById('whatsapp-link-btn').innerText = dict.success_btn_wa;
+      document.getElementById('success-close-btn-action').innerText = dict.success_btn_finish;
 
-      document.getElementById('success-title-text').innerText = localization[lang].success_title;
-      document.getElementById('success-desc-text').innerText = localization[lang].success_desc;
-      document.getElementById('whatsapp-link-btn').innerText = localization[lang].success_wa_btn;
-      document.getElementById('success-close-btn-action').innerText = localization[lang].success_close_btn;
-      document.getElementById('modal-close-btn-normal').innerText = localization[lang].close_btn;
-      document.getElementById('register-trigger-btn').innerText = localization[lang].register_btn;
+      document.getElementById('chat-header-sub-title').innerText = dict.chat_header_subtitle;
+      document.getElementById('chat-user-input').setAttribute('placeholder', dict.chat_placeholder);
+      document.getElementById('btn-chat-send').innerText = dict.chat_btn_send;
+      document.getElementById('btn-reply-japan').innerText = dict.chat_reply_japan_magang;
+      document.getElementById('btn-reply-germany').innerText = dict.chat_reply_germany_med;
+      document.getElementById('btn-reply-bp2mi').innerText = dict.chat_reply_bp2mi_rules;
 
-      document.getElementById('label-lobi').innerText = localization[lang].radar_lobi;
-
-      document.getElementById('qr-btn-1').innerText = localization[lang].quick_reply_1;
-      document.getElementById('qr-btn-2').innerText = localization[lang].quick_reply_2;
-      document.getElementById('qr-btn-3').innerText = localization[lang].quick_reply_3;
-
-      var audioBtn = document.getElementById('audio-control-btn');
-      if (audioBtn.classList.contains('muted')) {
-        audioBtn.setAttribute('title', localization[lang].audio_muted_title);
-      } else {
-        audioBtn.setAttribute('title', localization[lang].audio_playing_title);
-      }
-
-      // 2. Terjemahkan Ulang Chat Welcome Message & History
+      // 3. Terjemahkan Ulang Chat Welcome Message & History
       resetChatHistory();
 
-      // 3. Trigger Gambar Ulang Elemen 3D di dalam A-Frame Scene
+      // 4. Trigger Gambar Ulang Elemen 3D di dalam A-Frame Scene
       var sceneEl = document.querySelector('a-scene');
       if (sceneEl && sceneEl.components['booth-manager']) {
         sceneEl.components['booth-manager'].renderElements();
       }
     }
 
-    // Mengosongkan dan mengatur ulang sambutan obrolan sesuai bahasa terpilih
     function resetChatHistory() {
       var area = document.getElementById('chat-messages-area');
-      area.innerHTML = ''; // Kosongkan percakapan lama
+      area.innerHTML = '';
 
       var welcomeMsg = document.createElement('div');
       welcomeMsg.classList.add('message', 'received');
@@ -1550,7 +1467,6 @@
       area.appendChild(welcomeMsg);
     }
 
-    // Menginisiasi bahasa pertama kali saat sistem dibuka
     window.addEventListener('DOMContentLoaded', function() {
       switchLanguage('id');
     });
@@ -1561,7 +1477,6 @@
     var currentHotspotData = null;
 
     function openInfoModal(data) {
-      currentHotspotData = data;
       var modal = document.querySelector('#info-modal');
       var modalTitle = document.querySelector('#modal-title');
       var modalBody = document.querySelector('#modal-body');
@@ -1571,7 +1486,6 @@
       document.querySelector('#registration-form-container').style.display = 'none';
       document.querySelector('#success-container').style.display = 'none';
 
-      // Ambil teks translasi dinamis dari database hotspot di booth-manager
       var manager = document.querySelector('a-scene').components['booth-manager'];
       var localizedTitle = manager.hotspotTranslations[currentLanguage][data.titleId] || data.programId;
       var localizedContent = manager.hotspotTranslations[currentLanguage][data.contentId] || "";
@@ -1585,19 +1499,13 @@
         regBtn.style.display = 'none';
       }
 
-      var htmlContent = '<div style="margin-bottom: 15px;">' + localizedContent + '</div>';
+      var htmlContent = '<div style=\"margin-bottom: 15px;\">' + localizedContent + '</div>';
 
       if (data.type === 'video') {
         if (data.mediaUrl) {
-          htmlContent += '<div class="video-container">' +
-                         '<iframe src="' + data.mediaUrl + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
-                         '</div>';
+          htmlContent += '<div class=\"video-container\">' +\n                         '<iframe src=\"' + data.mediaUrl + '\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>' +\n                         '</div>';
         } else {
-          htmlContent += '<div class="video-container" style="background:#0c1520; display:flex; align-items:center; justify-content:center; flex-direction:column; padding: 40px 20px; box-sizing:border-box; border:1px dashed #FF3366;">' +
-                         '<div style="font-size:48px; margin-bottom:10px;">🎬</div>' +
-                         '<strong style="color:#FF3366;">[Simulasi Video Profil]</strong>' +
-                         '<p style="font-size:13px; color:#aaa; text-align:center; margin: 5px 0 0 0;">Hubungkan dengan menyisipkan URL embed YouTube Anda pada atribut `mediaUrl` di kode HTML.</p>' +
-                         '</div>';
+          htmlContent += '<div class=\"video-container\" style=\"background:#0c1520; display:flex; align-items:center; justify-content:center; flex-direction:column; padding: 40px 20px; box-sizing:border-box; border:1px dashed #FF3366;\">' +\n                         '<div style=\"font-size:48px; margin-bottom:10px;\">🎬</div>' +\n                         '<strong style=\"color:#FF3366;\">[Simulasi Video Profil]</strong>' +\n                         '<p style=\"font-size:13px; color:#aaa; text-align:center; margin: 5px 0 0 0;\">Hubungkan dengan menyisipkan URL embed YouTube Anda pada atribut `mediaUrl` di kode HTML.</p>' +\n                         '</div>';
         }
       }
 
@@ -1610,7 +1518,6 @@
       var modalBody = document.querySelector('#modal-body');
       modalBody.innerHTML = '';
       modal.style.display = 'none';
-      currentHotspotData = null;
     }
 
     function showRegistrationForm() {
@@ -1634,7 +1541,6 @@
         return;
       }
 
-      // Susun pesan WhatsApp dalam format terjemahan multibahasa yang sesuai
       var headerText = localization[currentLanguage].wa_message_header;
       var bodyText = localization[currentLanguage].wa_message_body;
       var phoneText = localization[currentLanguage].wa_message_phone;
@@ -1666,7 +1572,7 @@
     }
 
     // ==========================================
-    // SCRIPT C: BACKGROUND & SPATIAL AUDIO MANAGER
+    // SCRIPT C: AUDIO CONTROLLER
     // ==========================================
     var isMuted = true;
     var ambientAudio = document.getElementById('ambient-sound');
@@ -1679,16 +1585,16 @@
           isMuted = false;
           btn.innerText = "🔊";
           btn.classList.remove('muted');
-          btn.setAttribute('title', localization[currentLanguage].audio_playing_title);
+          btn.setAttribute('title', 'Matikan Suara Latar');
         }).catch(function(err) {
-          console.log("Pemutaran audio diblokir:", err);
+          console.log("Pemutaran audio diblokir browser:", err);
         });
       } else {
         ambientAudio.pause();
         isMuted = true;
         btn.innerText = "🔇";
         btn.classList.add('muted');
-        btn.setAttribute('title', localization[currentLanguage].audio_muted_title);
+        btn.setAttribute('title', 'Aktifkan Suara Pameran');
       }
     }
 
@@ -1708,12 +1614,12 @@
           var btn = document.getElementById('audio-control-btn');
           btn.innerText = "🔊";
           btn.classList.remove('muted');
-        }).catch(function(e) { console.log("Autoplay ignored"); });
+        }).catch(function(e) { console.log("Autoplay trigger ignored"); });
       }
     }, { once: true });
 
     // ==========================================
-    // SCRIPT D: CHATBOT SYSTEM (MULTILINGUAL COMPATIBLE)
+    // SCRIPT D: CUSTOM LIVE CHAT CONTROLLER
     // ==========================================
     function toggleChatWindow() {
       var chatWin = document.getElementById('chat-window');
@@ -1745,16 +1651,17 @@
       }, 1000);
     }
 
-    function sendQuickReply(topic) {
-      // Ambil teks dari tombol quick reply saat ini
-      var displayLabel = "";
-      if (topic === 'Japan Internship') displayLabel = localization[currentLanguage].quick_reply_1;
-      else if (topic === 'Germany Nurse') displayLabel = localization[currentLanguage].quick_reply_2;
-      else if (topic === 'BP2MI Regulation') displayLabel = localization[currentLanguage].quick_reply_3;
+    function sendQuickReply(key) {
+      var text = "";
+      if (key === 'japan') text = localization[currentLanguage].chat_reply_japan_magang;
+      if (key === 'germany') text = localization[currentLanguage].chat_reply_germany_med;
+      if (key === 'bp2mi') text = localization[currentLanguage].chat_reply_bp2mi_rules;
 
-      appendChatMessage(displayLabel, 'sent');
+      appendChatMessage(text, 'sent');
       setTimeout(function() {
-        generateBotResponse(topic);
+        if (key === 'japan') appendChatMessage(localization[currentLanguage].bot_response_japan, 'received');
+        if (key === 'germany') appendChatMessage(localization[currentLanguage].bot_response_germany, 'received');
+        if (key === 'bp2mi') appendChatMessage(localization[currentLanguage].bot_response_bp2mi, 'received');
       }, 1000);
     }
 
@@ -1770,23 +1677,21 @@
     function generateBotResponse(userText) {
       var lowerText = userText.toLowerCase();
       var response = "";
-      var lang = currentLanguage;
 
-      if (lowerText.includes('magang') || lowerText.includes('jepang') || lowerText.includes('japan') || lowerText.includes('実習') || lowerText.includes('日本')) {
-        response = localization[lang].bot_response_japan;
-      } else if (lowerText.includes('jerman') || lowerText.includes('perawat') || lowerText.includes('germany') || lowerText.includes('nurse') || lowerText.includes('看護師') || lowerText.includes('ドイツ')) {
-        response = localization[lang].bot_response_germany;
-      } else if (lowerText.includes('daftar') || lowerText.includes('bp2mi') || lowerText.includes('regulasi') || lowerText.includes('regulation') || lowerText.includes('法律') || lowerText.includes('保護')) {
-        response = localization[lang].bot_response_bp2mi;
+      if (lowerText.includes('magang') || lowerText.includes('jepang') || lowerText.includes('japan')) {
+        response = localization[currentLanguage].bot_response_japan;
+      } else if (lowerText.includes('jerman') || lowerText.includes('perawat') || lowerText.includes('germany') || lowerText.includes('nurse')) {
+        response = localization[currentLanguage].bot_response_germany;
+      } else if (lowerText.includes('daftar') || lowerText.includes('bp2mi') || lowerText.includes('regulasi') || lowerText.includes('rules')) {
+        response = localization[currentLanguage].bot_response_bp2mi;
       } else {
-        response = localization[lang].bot_response_fallback;
+        response = localization[currentLanguage].bot_response_fallback;
       }
 
-      response += localization[lang].bot_chat_wa_invite + targetWhatsAppNumber;
+      response += localization[currentLanguage].bot_chat_wa_invite + targetWhatsAppNumber;
       appendChatMessage(response, 'received');
     }
   </script>
-
 </body>
 </html>
 
