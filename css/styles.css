@@ -1,1 +1,649 @@
 
+    /* 1. Styling untuk Jendela Pop-up Informasi (Glassmorphism Overlay) */
+    #info-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 85%;
+      max-width: 600px;
+      background: rgba(10, 20, 30, 0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 2px solid rgba(0, 255, 204, 0.4);
+      border-radius: 16px;
+      padding: 25px;
+      z-index: 9999;
+      color: #ffffff;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      box-shadow: 0 20px 50px rgba(0, 255, 204, 0.3);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -45%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    #info-modal h2 {
+      color: #00FFCC;
+      margin-top: 0;
+      font-size: 22px;
+      border-bottom: 2px solid rgba(0, 255, 204, 0.2);
+      padding-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    #info-modal .modal-content {
+      margin-top: 15px;
+      line-height: 1.6;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 15px;
+    }
+
+    #info-modal .modal-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    #info-modal .modal-content::-webkit-scrollbar-thumb {
+      background: rgba(0, 255, 204, 0.3);
+      border-radius: 3px;
+    }
+
+    #info-modal .close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      float: right;
+      margin-top: 15px;
+      transition: all 0.2s ease;
+      margin-left: 10px;
+    }
+
+    #info-modal .close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    #info-modal .register-btn {
+      background: #00FFCC;
+      color: #05101a;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      float: right;
+      margin-top: 15px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 255, 204, 0.2);
+    }
+
+    #info-modal .register-btn:hover {
+      background: #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Container Pemutar Video */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 204, 0.3);
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Form Registrasi Khusus */
+    #registration-form-container {
+      display: none;
+      margin-top: 20px;
+      border-top: 1px solid rgba(0, 255, 204, 0.2);
+      padding-top: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: #00FFCC;
+      margin-bottom: 5px;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 255, 204, 0.3);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #00FFCC;
+      box-shadow: 0 0 5px rgba(0, 255, 204, 0.3);
+    }
+
+    .submit-form-btn {
+      background: #FF3366;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(255, 51, 102, 0.3);
+    }
+
+    .submit-form-btn:hover {
+      background: #ff5588;
+    }
+
+    /* Tampilan Sukses Registrasi */
+    .success-panel {
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      color: #00FFCC;
+      margin-bottom: 10px;
+    }
+
+    .whatsapp-btn {
+      display: inline-block;
+      background: #25D366;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-top: 15px;
+      box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+    }
+
+    .whatsapp-btn:hover {
+      background: #34e073;
+    }
+
+    /* 2. LIVE AMBIENT AUDIO CONTROL BUTTON (KANAN ATAS) */
+    #audio-control-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: rgba(10, 20, 30, 0.85);
+      border: 2px solid #00FFCC;
+      border-radius: 50%;
+      color: #00FFCC;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    #audio-control-btn:hover {
+      scale: 1.1;
+      background: #00FFCC;
+      color: #05101a;
+      box-shadow: 0 0 20px #00FFCC;
+    }
+
+    #audio-control-btn.muted {
+      border-color: #FF3366;
+      color: #FF3366;
+      animation: pulseMute 1.8s infinite alternate;
+    }
+
+    @keyframes pulseMute {
+      0% { box-shadow: 0 0 5px rgba(255, 51, 102, 0.2); }
+      100% { box-shadow: 0 0 15px rgba(255, 51, 102, 0.6); }
+    }
+
+    /* 3. Petunjuk Navigasi Mengambang di Kiri Atas */
+    .vr-instructions {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(10, 15, 25, 0.85);
+      backdrop-filter: blur(5px);
+      padding: 12px 18px;
+      border-radius: 10px;
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 11px;
+      z-index: 1000;
+      pointer-events: none;
+      border: 1px solid rgba(0, 255, 204, 0.2);
+      border-left: 4px solid #00FFCC;
+      max-width: 250px;
+    }
+
+    /* 4. INTERACTIVE 3D-STYLE FLOOR PLAN (RADAR MINIMAP) DI KANAN BAWAH */
+    #radar-minimap {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 170px;
+      height: 170px;
+      background: rgba(5, 12, 20, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 2px solid rgba(0, 255, 204, 0.4);
+      border-radius: 50%;
+      z-index: 1000;
+      box-shadow: 0 0 25px rgba(0, 255, 204, 0.2);
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    #radar-minimap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 30%, rgba(0, 255, 204, 0.05) 31%, rgba(0, 255, 204, 0.05) 33%, transparent 34%),
+        radial-gradient(circle, transparent 60%, rgba(0, 255, 204, 0.05) 61%, rgba(0, 255, 204, 0.05) 63%, transparent 64%),
+        linear-gradient(to right, rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+      background-position: center;
+      pointer-events: none;
+    }
+
+    .radar-sweep {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(0, 255, 204, 0.15) 0deg, transparent 90deg);
+      animation: rotateSweep 4s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes rotateSweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .minimap-lines {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .radar-node {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #003344;
+      border: 2px solid rgba(0, 255, 204, 0.6);
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 5;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+    }
+
+    .radar-node:hover {
+      background: #00FFCC !important;
+      box-shadow: 0 0 12px #00FFCC;
+      scale: 1.3;
+    }
+
+    .radar-node.active {
+      background: #00FFCC !important;
+      border-color: #ffffff !important;
+      box-shadow: 0 0 15px #00FFCC, 0 0 5px #00FFCC;
+    }
+
+    .radar-node.active::after {
+      content: '';
+      position: absolute;
+      top: -6px; left: -6px; right: -6px; bottom: -6px;
+      border: 2px solid #00FFCC;
+      border-radius: 50%;
+      animation: pulseNode 1.5s infinite ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes pulseNode {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .minimap-label {
+      position: absolute;
+      font-size: 7.5px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.7);
+      text-shadow: 0 0 4px #000;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 4;
+      transform: translate(-50%, 6px);
+    }
+
+    #node-kementerian { top: 50%; left: 50%; }
+    #node-binawan      { top: 25%; left: 30%; }
+    #node-hamawork     { top: 50%; left: 18%; }
+    #node-jpath        { top: 25%; left: 70%; }
+    #node-lpkcis       { top: 50%; left: 82%; }
+    #node-maharani     { top: 80%; left: 50%; }
+
+    /* 5. INTERACTIVE LIVE CHAT SYSTEM (KIRI BAWAH) */
+    #live-chat-container {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+    }
+
+    #chat-trigger-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #00FFCC;
+      color: #05101a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(0, 255, 204, 0.4);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: none;
+    }
+
+    #chat-trigger-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 255, 204, 0.6);
+      background: #ffffff;
+    }
+
+    #chat-trigger-btn svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    .chat-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 18px;
+      height: 18px;
+      background: #FF3366;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #05101a;
+      animation: bounce 1s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-3px); }
+    }
+
+    #chat-window {
+      display: none;
+      width: 320px;
+      height: 400px;
+      background: rgba(10, 20, 30, 0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1.5px solid rgba(0, 255, 204, 0.3);
+      border-radius: 12px;
+      box-shadow: 0 15px 40px rgba(0, 255, 204, 0.2);
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
+      position: absolute;
+      bottom: 70px;
+      left: 0;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-header {
+      background: rgba(0, 255, 204, 0.15);
+      border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chat-status-dot {
+      width: 8px;
+      height: 8px;
+      background: #00FFCC;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00FFCC;
+    }
+
+    .chat-header h4 {
+      margin: 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .chat-header p {
+      margin: 2px 0 0 0;
+      font-size: 10px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .chat-close-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .chat-close-btn:hover {
+      color: #FF3366;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(0, 255, 204, 0.2);
+      border-radius: 2px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .message.received {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .message.sent {
+      background: #00FFCC;
+      color: #05101a;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+      font-weight: 500;
+    }
+
+    .quick-replies-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 15px;
+      background: rgba(0,0,0,0.2);
+      border-top: 1px solid rgba(0, 255, 204, 0.1);
+    }
+
+    .quick-reply-btn {
+      background: rgba(0, 255, 204, 0.1);
+      border: 1px solid rgba(0, 255, 204, 0.3);
+      color: #00FFCC;
+      border-radius: 15px;
+      padding: 5px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quick-reply-btn:hover {
+      background: #00FFCC;
+      color: #05101a;
+    }
+
+    .chat-input-area {
+      padding: 10px 15px;
+      background: rgba(5, 10, 15, 0.9);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .chat-input-area input:focus {
+      outline: none;
+      border-color: #00FFCC;
+    }
+
+    .chat-send-btn {
+      background: #00FFCC;
+      color: #05101a;
+      border: none;
+      border-radius: 6px;
+      padding: 0 15px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .chat-send-btn:hover {
+      background: #ffffff;
+    }
+
+    /* 6. LANG SWITCHER */
+    #language-switcher-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 6px;
+      z-index: 1002;
+    }
+
+    .lang-btn {
+      background: rgba(10, 20, 30, 0.85);
+      border: 1.5px solid rgba(0, 255, 204, 0.3);
+      border-radius: 6px;
+      color: rgba(255, 255, 255, 0.7);
+      padding: 6px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn:hover {
+      border-color: #00FFCC;
+      color: #fff;
+    }
+
+    .lang-btn.active {
+      background: #00FFCC;
+      color: #05101a;
+      border-color: #00FFCC;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+    }
+  
+/* ===== WALKTHROUGH NAVIGATION v12 ===== */
+#walkthrough-hud{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1005;display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(5,12,20,.88);border:1px solid rgba(0,255,204,.35);border-radius:12px;backdrop-filter:blur(10px);box-shadow:0 8px 30px rgba(0,0,0,.25);font-family:'Segoe UI',sans-serif;color:#fff}
+#walkthrough-hud .walk-status{font-size:11px;font-weight:700;letter-spacing:.8px;color:#00ffcc;white-space:nowrap}
+.walk-btn{border:1px solid rgba(0,255,204,.35);background:rgba(0,255,204,.08);color:#fff;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:11px;font-weight:700;transition:.2s}
+.walk-btn:hover{background:#00ffcc;color:#05101a;transform:translateY(-1px)}
+.walk-btn.primary{background:#00ffcc;color:#05101a}
+#walkthrough-help{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:1003;padding:8px 14px;background:rgba(5,12,20,.78);border:1px solid rgba(255,255,255,.14);border-radius:20px;color:rgba(255,255,255,.8);font:11px 'Segoe UI',sans-serif;pointer-events:none;backdrop-filter:blur(8px)}
+#walk-progress-wrap{position:fixed;left:50%;top:61px;transform:translateX(-50%);width:230px;height:3px;background:rgba(255,255,255,.12);border-radius:3px;z-index:1005;overflow:hidden}
+#walk-progress{height:100%;width:0;background:#00ffcc;transition:width .35s ease}
+#walk-mobile-controls{display:none;position:fixed;right:18px;bottom:90px;z-index:1004;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px;gap:7px}
+.walk-pad{border:1px solid rgba(0,255,204,.35);background:rgba(5,12,20,.76);color:#00ffcc;border-radius:12px;font-size:20px;font-weight:700;backdrop-filter:blur(8px)}
+.walk-pad:active{background:#00ffcc;color:#05101a}
+#walk-forward{grid-column:2;grid-row:1} #walk-back{grid-column:2;grid-row:2} #walk-left{grid-column:1;grid-row:2} #walk-right{grid-column:3;grid-row:2}
+@media (max-width:700px){#walkthrough-hud{top:72px;max-width:calc(100vw - 28px);width:max-content}.walk-btn{padding:7px 8px}.walk-btn.route-hide{display:none}#walkthrough-help{bottom:18px;max-width:82vw;text-align:center}#walk-mobile-controls{display:grid}#walk-progress-wrap{top:114px;width:180px}}
+
+  

@@ -1,0 +1,5 @@
+#wv13-hud{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(0,255,204,.35);border-radius:18px;background:rgba(5,16,26,.82);backdrop-filter:blur(10px);color:#fff;font:600 13px/1.2 Arial,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+#wv13-hud button{border:1px solid rgba(0,255,204,.45);background:rgba(0,255,204,.1);color:#bfffee;border-radius:12px;padding:8px 11px;cursor:pointer}
+#wv13-status{min-width:120px;text-align:center;color:#00ffcc}
+#wv13-guide{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:9998;padding:8px 14px;border-radius:999px;background:rgba(5,16,26,.72);color:#d9fff7;font:500 12px Arial,sans-serif;pointer-events:none}
+@media (max-width:700px){#wv13-hud{bottom:12px;max-width:94%;padding:8px;gap:5px}#wv13-hud button{padding:7px 8px;font-size:11px}#wv13-guide{top:10px;font-size:11px}}
