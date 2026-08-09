@@ -1,1 +1,0 @@
-/* Reserved for future modular exhibition logic. */
