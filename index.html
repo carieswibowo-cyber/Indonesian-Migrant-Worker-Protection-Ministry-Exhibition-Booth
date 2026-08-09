@@ -640,6 +640,22 @@
       border-color: #00FFCC;
       box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
     }
+  
+/* ===== WALKTHROUGH NAVIGATION v12 ===== */
+#walkthrough-hud{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1005;display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(5,12,20,.88);border:1px solid rgba(0,255,204,.35);border-radius:12px;backdrop-filter:blur(10px);box-shadow:0 8px 30px rgba(0,0,0,.25);font-family:'Segoe UI',sans-serif;color:#fff}
+#walkthrough-hud .walk-status{font-size:11px;font-weight:700;letter-spacing:.8px;color:#00ffcc;white-space:nowrap}
+.walk-btn{border:1px solid rgba(0,255,204,.35);background:rgba(0,255,204,.08);color:#fff;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:11px;font-weight:700;transition:.2s}
+.walk-btn:hover{background:#00ffcc;color:#05101a;transform:translateY(-1px)}
+.walk-btn.primary{background:#00ffcc;color:#05101a}
+#walkthrough-help{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:1003;padding:8px 14px;background:rgba(5,12,20,.78);border:1px solid rgba(255,255,255,.14);border-radius:20px;color:rgba(255,255,255,.8);font:11px 'Segoe UI',sans-serif;pointer-events:none;backdrop-filter:blur(8px)}
+#walk-progress-wrap{position:fixed;left:50%;top:61px;transform:translateX(-50%);width:230px;height:3px;background:rgba(255,255,255,.12);border-radius:3px;z-index:1005;overflow:hidden}
+#walk-progress{height:100%;width:0;background:#00ffcc;transition:width .35s ease}
+#walk-mobile-controls{display:none;position:fixed;right:18px;bottom:90px;z-index:1004;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px;gap:7px}
+.walk-pad{border:1px solid rgba(0,255,204,.35);background:rgba(5,12,20,.76);color:#00ffcc;border-radius:12px;font-size:20px;font-weight:700;backdrop-filter:blur(8px)}
+.walk-pad:active{background:#00ffcc;color:#05101a}
+#walk-forward{grid-column:2;grid-row:1} #walk-back{grid-column:2;grid-row:2} #walk-left{grid-column:1;grid-row:2} #walk-right{grid-column:3;grid-row:2}
+@media (max-width:700px){#walkthrough-hud{top:72px;max-width:calc(100vw - 28px);width:max-content}.walk-btn{padding:7px 8px}.walk-btn.route-hide{display:none}#walkthrough-help{bottom:18px;max-width:82vw;text-align:center}#walk-mobile-controls{display:grid}#walk-progress-wrap{top:114px;width:180px}}
+
   </style>
 
   <script>
@@ -1157,7 +1173,7 @@
             easing: 'easeInOutSine'
           });
 
-          var handler = function() { self.switchScene(p.target); };
+          var handler = function() { walkToScene(p.target); };
           ring.addEventListener('click', handler);
           sphere.addEventListener('click', handler);
 
@@ -1224,7 +1240,7 @@
     function navigateTo(targetBooth) {
       var sceneEl = document.querySelector('a-scene');
       if (sceneEl && sceneEl.components['booth-manager']) {
-        sceneEl.components['booth-manager'].switchScene(targetBooth);
+        walkToScene(targetBooth);
       }
     }
   </script>
@@ -1383,6 +1399,23 @@
 
     <div id="node-maharani" class="radar-node" onclick="navigateTo('maharani')"></div>
     <div class="minimap-label" style="top:80%; left:50%;">MAHARANI</div>
+  </div>
+
+
+  <!-- WALKTHROUGH HUD -->
+  <div id="walkthrough-hud">
+    <span class="walk-status" id="walk-status">WALKTHROUGH • LOBI</span>
+    <button class="walk-btn" id="walk-prev" onclick="walkPrevious()">← BACK</button>
+    <button class="walk-btn primary" id="walk-next" onclick="walkNext()">NEXT STOP →</button>
+    <button class="walk-btn route-hide" onclick="toggleGuidedTour()" id="walk-tour-btn">GUIDED TOUR</button>
+  </div>
+  <div id="walk-progress-wrap"><div id="walk-progress"></div></div>
+  <div id="walkthrough-help">W / S = jalan antar booth • A / D = putar • Mouse = lihat • Klik portal = berjalan ke booth</div>
+  <div id="walk-mobile-controls" aria-label="Mobile walkthrough controls">
+    <button class="walk-pad" id="walk-forward" aria-label="Next">▲</button>
+    <button class="walk-pad" id="walk-left" aria-label="Left">◀</button>
+    <button class="walk-pad" id="walk-right" aria-label="Right">▶</button>
+    <button class="walk-pad" id="walk-back" aria-label="Back">▼</button>
   </div>
 
   <!-- Inisialisasi Scene VR (A-Frame) -->
@@ -1728,6 +1761,120 @@
       response += localization[currentLanguage].bot_chat_wa_invite + targetWhatsAppNumber;
       appendChatMessage(response, 'received');
     }
+  </script>
+
+
+
+  <script>
+    // ==========================================
+    // WALKTHROUGH NAVIGATION v12
+    // A 360 panorama cannot provide true 3D parallax, so this layer
+    // simulates a physical walk with camera easing, direction/turn input,
+    // then transitions to the linked panorama.
+    // ==========================================
+    (function(){
+      var route = ['kementerian','binawan','hamawork','jpath','lpkcis','maharani'];
+      var routeIndex = 0;
+      var guided = false;
+      var walking = false;
+      var keyState = {};
+      var turnInterval = null;
+      var boothLabels = {
+        kementerian:'LOBI', binawan:'BINAWAN', hamawork:'HWS',
+        jpath:"J'PATH", lpkcis:'CIS', maharani:'MAHARANI'
+      };
+
+      function manager(){
+        var scene=document.querySelector('a-scene');
+        return scene && scene.components['booth-manager'];
+      }
+      function currentScene(){ var m=manager(); return m ? m.currentScene : 'kementerian'; }
+      function syncRoute(){
+        var cur=currentScene(), i=route.indexOf(cur);
+        if(i>=0) routeIndex=i;
+        var st=document.getElementById('walk-status');
+        var pg=document.getElementById('walk-progress');
+        if(st) st.textContent='WALKTHROUGH • '+(boothLabels[cur]||cur.toUpperCase());
+        if(pg) pg.style.width=((routeIndex/(route.length-1))*100)+'%';
+      }
+      window.walkToScene=function(target){
+        if(walking || target===currentScene()) return;
+        var m=manager(); if(!m || !m.scenes[target]) return;
+        walking=true;
+        var cam=document.querySelector('a-camera');
+        var startPos=cam ? (cam.getAttribute('position')||{x:0,y:1.6,z:0}) : {x:0,y:1.6,z:0};
+        var startFov=cam ? ((cam.getAttribute('camera')||{}).fov||80) : 80;
+        var start=performance.now(), duration=900;
+        function ease(t){ return t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+        function frame(now){
+          var t=Math.min(1,(now-start)/duration), e=ease(t);
+          if(cam){
+            cam.setAttribute('position',{x:0,y:1.6+Math.sin(t*Math.PI)*0.035,z:-0.9*e});
+            cam.setAttribute('camera','fov',startFov+(98-startFov)*Math.sin(t*Math.PI));
+          }
+          if(t<1){ requestAnimationFrame(frame); return; }
+          m.switchScene(target);
+          setTimeout(function(){
+            if(cam){cam.setAttribute('position',{x:0,y:1.6,z:0});cam.setAttribute('camera','fov',80);}
+            routeIndex=route.indexOf(target)>=0?route.indexOf(target):routeIndex;
+            syncRoute(); walking=false;
+          },650);
+        }
+        requestAnimationFrame(frame);
+      };
+      window.walkNext=function(){
+        var i=route.indexOf(currentScene());
+        var next=(i+1)%route.length;
+        walkToScene(route[next]);
+      };
+      window.walkPrevious=function(){
+        var i=route.indexOf(currentScene());
+        var prev=(i-1+route.length)%route.length;
+        walkToScene(route[prev]);
+      };
+      window.toggleGuidedTour=function(){
+        guided=!guided;
+        var b=document.getElementById('walk-tour-btn');
+        if(b) b.textContent=guided?'AUTO TOUR: ON':'GUIDED TOUR';
+        if(guided) walkNext();
+      };
+
+      function turn(dir){
+        var cam=document.querySelector('a-camera');
+        if(!cam) return;
+        var r=cam.getAttribute('rotation')||{x:0,y:0,z:0};
+        r.y += dir*7;
+        cam.setAttribute('rotation',r);
+      }
+      function bindHold(id, dir){
+        var el=document.getElementById(id); if(!el) return;
+        var start=function(e){e.preventDefault();turnInterval=setInterval(function(){turn(dir);},55);};
+        var stop=function(){clearInterval(turnInterval);turnInterval=null;};
+        el.addEventListener('pointerdown',start); el.addEventListener('pointerup',stop); el.addEventListener('pointerleave',stop); el.addEventListener('pointercancel',stop);
+      }
+      bindHold('walk-left',-1); bindHold('walk-right',1);
+      document.getElementById('walk-forward')?.addEventListener('click',walkNext);
+      document.getElementById('walk-back')?.addEventListener('click',walkPrevious);
+
+      document.addEventListener('keydown',function(e){
+        if(['INPUT','TEXTAREA'].indexOf(document.activeElement.tagName)>=0) return;
+        var k=e.key.toLowerCase();
+        if(['w','s','a','d','arrowup','arrowdown','arrowleft','arrowright'].indexOf(k)>=0) e.preventDefault();
+        if(k==='w'||k==='arrowup'){ if(!keyState.w){keyState.w=true;walkNext();} }
+        if(k==='s'||k==='arrowdown'){ if(!keyState.s){keyState.s=true;walkPrevious();} }
+        if(k==='a'||k==='arrowleft'){ if(!keyState.a){keyState.a=true;turn(-1);} }
+        if(k==='d'||k==='arrowright'){ if(!keyState.d){keyState.d=true;turn(1);} }
+        if(k==='escape' && walking) walking=false;
+      });
+      document.addEventListener('keyup',function(e){keyState[e.key.toLowerCase()]=false;});
+
+      // Keep HUD synchronized after a portal/minimap navigation.
+      var oldSwitch = null;
+      document.addEventListener('DOMContentLoaded',function(){
+        setTimeout(function(){syncRoute();},900);
+        setInterval(function(){syncRoute();},1000);
+      });
+    })();
   </script>
 
 </body>
