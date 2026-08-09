@@ -1877,5 +1877,37 @@
     })();
   </script>
 
+
+<!-- WALKTHROUGH V13 -->
+<style id="walkthrough-v13-style">
+#wv13-hud{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(0,255,204,.35);border-radius:18px;background:rgba(5,16,26,.82);backdrop-filter:blur(10px);color:#fff;font:600 13px/1.2 Arial,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+#wv13-hud button{border:1px solid rgba(0,255,204,.45);background:rgba(0,255,204,.1);color:#bfffee;border-radius:12px;padding:8px 11px;cursor:pointer}
+#wv13-status{min-width:120px;text-align:center;color:#00ffcc}
+#wv13-guide{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:9998;padding:8px 14px;border-radius:999px;background:rgba(5,16,26,.72);color:#d9fff7;font:500 12px Arial,sans-serif;pointer-events:none}
+@media (max-width:700px){#wv13-hud{bottom:12px;max-width:94%;padding:8px;gap:5px}#wv13-hud button{padding:7px 8px;font-size:11px}#wv13-guide{top:10px;font-size:11px}}
+</style>
+<div id="wv13-guide">WASD / ↑↓ untuk berjalan • ← → untuk melihat</div>
+<div id="wv13-hud"><button id="wv13-back">← BACK</button><button id="wv13-forward">NEXT →</button><button id="wv13-tour">▶ TOUR</button><button id="wv13-stop" style="display:none">■ STOP</button><span id="wv13-status">FREE WALK</span></div>
+<script id="walkthrough-v13-script">
+(function(){
+  const route=['kementerian','binawan','hamawork','jpath','lpkcis','maharani'];
+  const names={kementerian:'LOBI',binawan:'BINAWAN',hamawork:'HWS',jpath:"J'PATH",lpkcis:'CIS',maharani:'MAHARANI'};
+  let idx=0,touring=false,timer=null; const keys={};
+  const scene=()=>document.querySelector('a-scene');
+  const cam=()=>scene()&&scene().querySelector('a-camera');
+  function go(target){const m=scene()&&scene().components&&scene().components['booth-manager'];if(!m)return;idx=Math.max(0,route.indexOf(target));m.switchScene(target);setTimeout(update,80)}
+  function update(){document.getElementById('wv13-status').textContent=touring?'GUIDED TOUR':'FREE WALK';document.getElementById('wv13-guide').textContent=touring?'MENUJU • '+names[route[idx]]:'FREE WALK • W/A/S/D berjalan • mouse melihat'}
+  function next(){go(route[(idx+1)%route.length])} function back(){go(route[(idx-1+route.length)%route.length])}
+  function stop(){touring=false;clearInterval(timer);document.getElementById('wv13-tour').style.display='inline-block';document.getElementById('wv13-stop').style.display='none';update()}
+  window.addEventListener('keydown',e=>{let k=e.key.length===1?e.key.toLowerCase():e.key;if(['w','a','s','d','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(k))e.preventDefault();keys[k]=true;if(k==='Enter'&&!touring)next();if(k==='Escape'&&touring)stop()});
+  window.addEventListener('keyup',e=>{let k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=false});
+  document.getElementById('wv13-forward').onclick=next;document.getElementById('wv13-back').onclick=back;
+  document.getElementById('wv13-tour').onclick=function(){touring=true;this.style.display='none';document.getElementById('wv13-stop').style.display='inline-block';update();timer=setInterval(next,6500)};
+  document.getElementById('wv13-stop').onclick=stop;
+  function loop(){const c=cam();if(c&&window.THREE){let x=0,z=0;if(keys.w||keys.ArrowUp)z-=1;if(keys.s||keys.ArrowDown)z+=1;if(keys.a||keys.ArrowLeft)x-=1;if(keys.d||keys.ArrowRight)x+=1;if(x||z){let n=Math.hypot(x,z);x/=n;z/=n;let v=new THREE.Vector3(x,0,z);v.applyQuaternion(c.object3D.quaternion);c.object3D.position.x+=v.x*.035;c.object3D.position.z+=v.z*.035;c.object3D.position.y=1.6}}requestAnimationFrame(loop)}
+  const oldNav=window.navigateTo;if(typeof oldNav==='function'){window.navigateTo=function(t){let i=route.indexOf(t);if(i>=0)idx=i;oldNav(t);setTimeout(update,50)}}
+  update();loop();
+})();
+</script>
 </body>
 </html>
