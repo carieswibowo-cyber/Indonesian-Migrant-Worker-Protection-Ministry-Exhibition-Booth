@@ -1,80 +1,110 @@
-/**
- * V16 Interactive Exhibition - Integration Logic
- * Mengelola transisi gambar 360°, progress counter, favorit, 
- * kuis interaktif, dan integrasi pendaftaran WhatsApp.
- */
 
-// 1. STATE MANAGEMENT PAMERAN
-const exhibitionState = {
-    currentBooth: 'lobi',
-    visitedBooths: new Set(['lobi']), // Melacak booth yang sudah dikunjungi
-    favorites: new Set(),            // Menyimpan daftar booth favorit
-    
-    // Data spesifik untuk masing-masing Booth (Grounded dari aset gambar panorama)
-    boothData: {
-        lobi: {
-            title: "Lobi Utama (Kementerian / BP2MI)",
-            bgImage: "kementerianv.jpg",
-            description: "Selamat datang di Lobi Utama Kementerian Pelindungan Pekerja Migran Indonesia / BP2MI. Tempat awal untuk mendapatkan informasi resmi, panduan hukum, dan perlindungan bagi calon pekerja migran Indonesia.",
-            assistantText: "Halo! Selamat datang di Lobi Utama. Di sini kami menyediakan panduan alur perlindungan resmi agar Anda aman bermigrasi.",
-            quiz: {
-                question: "Siapa lembaga resmi pemerintah Indonesia yang bertugas melindungi Pekerja Migran?",
-                options: ["A. Lembaga Swasta", "B. BP2MI / Kementerian", "C. Agen Sampingan"],
-                correct: 1, // Pilihan B
-                explanation: "Betul! BP2MI dan Kementerian resmi adalah garda utama pelindung PMI."
-            }
-        },
-        binawan: {
-            title: "Booth Binawan Inti Utama",
-            bgImage: "binawanv.jpg",
-            description: "Binawan Inti Utama (Pioneer 49th Years) menawarkan program pelatihan terstandarisasi global dan penempatan kerja untuk tenaga kesehatan (perawat) serta sektor profesional lainnya ke luar negeri.",
-            assistantText: "Halo! Apakah Anda seorang perawat yang tertarik berkarir di rumah sakit internasional di Timur Tengah atau Asia?",
-            quiz: {
-                question: "Sektor apa yang menjadi keunggulan utama dari program penempatan Binawan?",
-                options: ["A. Sektor Pertanian", "B. Sektor Tenaga Kesehatan / Perawat", "C. Sektor Transportasi"],
-                correct: 1,
-                explanation: "Benar sekali! Binawan terkenal dengan keunggulan penempatan tenaga kesehatan global."
-            }
-        },
-        hws: {
-            title: "Booth Hama Work Solution (HWS)",
-            bgImage: "hamaworksolutionv.jpg",
-            description: "Hama Work Solution (HWS) menyediakan solusi rekrutmen terpercaya untuk penempatan pekerja migran terampil di berbagai negara mitra dengan skema perlindungan yang kuat.",
-            assistantText: "Selamat datang di HWS! Kami siap membantu mencocokkan keterampilan Anda dengan peluang kerja terbaik di luar negeri.",
-            quiz: {
-                question: "Skema penempatan apa yang diutamakan oleh Hama Work Solution?",
-                options: ["A. Non-prosedural", "B. Tenaga Kerja Terampil (Skilled Worker)", "C. Pekerja Tanpa Keahlian"],
-                correct: 1,
-                explanation: "Tepat! Penempatan resmi selalu memprioritaskan sertifikasi dan keahlian (Skilled)."
-            }
-        },
-        jpath: {
-            title: "Booth J'Path Center",
-            bgImage: "jpathv.jpg",
-            description: "J'Path Center menyediakan program beasiswa eksklusif ke Jepang (pembelajaran bahasa Jepang JLPT + SSW) sebagai mitra resmi P3MI untuk membimbing penempatan kerja legal.",
-            assistantText: "Konnichiwa! Ingin bekerja di Jepang dengan skema beasiswa bahasa terjamin? Mari bergabung bersama J'Path!",
-            quiz: {
-                question: "Program beasiswa apa yang ditawarkan oleh J'Path untuk keberangkatan ke Jepang?",
-                options: ["A. JLPT + SSW", "B. Hanya Kursus Singkat", "C. Beasiswa Kuliah S3"],
-                correct: 0, // Pilihan A
-                explanation: "Luar biasa! Kombinasi sertifikasi JLPT dan SSW (Specified Skilled Worker) adalah kunci sukses kerja ke Jepang."
-            }
-        },
-        cis: {
-            title: "Booth LPK-CIS",
-            bgImage: "lpkcisv.jpg",
-            description: "LPK-CIS merupakan Japanese Language Training Center sekaligus Sending Organization (SO/RSO) resmi untuk menyalurkan tenaga kerja terampil Indonesia langsung ke perusahaan Jepang.",
-            assistantText: "Selamat datang di LPK-CIS! Kami melatih kemampuan bahasa dan budaya agar Anda siap beradaptasi di dunia kerja Jepang.",
-            quiz: {
-                question: "Apa fungsi dari LPK-CIS selain sebagai pusat pelatihan bahasa Jepang?",
-                options: ["A. Agen Wisata", "B. Sending Organization (SO) Resmi", "C. Toko Buku"],
-                correct: 1,
-                explanation: "Benar! Sebagai SO resmi, LPK-CIS dapat mengirimkan peserta magang/pekerja langsung ke Jepang."
-            }
-        },
-        maharani: {
-            title: "Booth PT Maharani Tri Utama Mandiri",
-            bgImage: "maharanitriv.jpg",
-            description: "PT Maharani Tri Utama Mandiri berfokus pada penyediaan lowongan kerja sektor domestik dan formal dengan pengawasan serta perlindungan hukum ketat untuk memastikan keselamatan pekerja.",
-            assistantText: "Halo! Kami memastikan seluruh proses rekrutmen Anda dilakukan secara transparan, legal, dan
+(function(){
+"use strict";
+const booths=[
+ {id:"kementerian",name:"LOBBY / KP2MI",desc:"Main exhibition lobby and orientation area.",topics:["Protection","Registration","Services"]},
+ {id:"binawan",name:"BINAWAN INTI UTAMA",desc:"Exhibition booth for professional and healthcare opportunities.",topics:["Healthcare","Training","Jobs"]},
+ {id:"hamawork",name:"HAMA WORK SOLUTION",desc:"Employment and placement information booth.",topics:["Jobs","Placement","Training"]},
+ {id:"jpath",name:"J'PATH",desc:"Pathway-focused information and opportunity booth.",topics:["Japan","Jobs","Preparation"]},
+ {id:"lpkcis",name:"LPK-CIS",desc:"Training and preparation information booth.",topics:["Training","Skills","Preparation"]},
+ {id:"maharani",name:"MAHARANI TRADING",desc:"Opportunity and business-related exhibition booth.",topics:["Jobs","Opportunity","Services"]}
+];
+const topics={
+ Healthcare:["BINAWAN INTI UTAMA"], Training:["BINAWAN INTI UTAMA","LPK-CIS"], Jobs:["BINAWAN INTI UTAMA","HAMA WORK SOLUTION","J'PATH","MAHARANI TRADING"],
+ Protection:["LOBBY / KP2MI"], Registration:["LOBBY / KP2MI"], Placement:["HAMA WORK SOLUTION"], Japan:["J'PATH"], Preparation:["J'PATH","LPK-CIS"], Skills:["LPK-CIS"], Opportunity:["MAHARANI TRADING"]
+};
+const state={visited:new Set(),favorites:new Set(),quizScore:0,quizIndex:0};
+const $=id=>document.getElementById(id);
+const modal=$("v16-modal"),content=$("v16-content");
+
+function open(contentHtml){content.innerHTML=contentHtml;modal.classList.remove("v16-hidden");modal.setAttribute("aria-hidden","false");}
+function close(){modal.classList.add("v16-hidden");modal.setAttribute("aria-hidden","true")}
+$("v16-close").onclick=close;$("v16-backdrop").onclick=close;
+
+function updateProgress(){
+ $("v16-progress-pill").textContent=`${state.visited.size} / 6 BOOTHS`;
+}
+function markVisited(id){state.visited.add(id);updateProgress()}
+
+function boothList(){
+ return `<h1 class="v16-title">🏢 Exhibition Booths</h1>
+ <p class="v16-sub">Choose a booth to discover what it can offer.</p>
+ <div class="v16-grid">${booths.map(b=>`
+ <div class="v16-card">
+  <h3>${b.name}</h3><p>${b.desc}</p>
+  <div class="v16-tags">${b.topics.map(t=>`<span class="v16-tag">${t}</span>`).join("")}</div>
+  <button class="v16-btn" data-booth="${b.id}">Explore booth</button>
+ </div>`).join("")}</div>`;
+}
+function opportunity(){
+ open(`<h1 class="v16-title">💼 Find Your Opportunity</h1>
+ <p class="v16-sub">Choose a topic to see which exhibition booth is relevant.</p>
+ <div class="v16-tags">${Object.keys(topics).map(t=>`<button class="v16-tag" data-topic="${t}">${t}</button>`).join("")}</div>
+ <div id="v16-topic-result"></div>`);
+}
+function journey(){
+ open(`<h1 class="v16-title">🛡️ Protection Journey</h1>
+ <p class="v16-sub">A simple exhibition guide to the migrant-worker journey.</p>
+ ${[
+ ["1","BEFORE WORKING ABROAD","Preparation, registration, skills and readiness."],
+ ["2","PLACEMENT","Understand the employment and placement pathway."],
+ ["3","DURING EMPLOYMENT","Know where to seek information and assistance."],
+ ["4","PROTECTION","Understand available protection and complaint channels."],
+ ["5","RETURN","Prepare for the transition back to Indonesia."]
+ ].map(x=>`<div class="v16-step"><div class="v16-num">${x[0]}</div><div><b>${x[1]}</b><p class="v16-sub" style="margin:4px 0 0">${x[2]}</p></div></div>`).join("")}`);
+}
+const questions=[
+ {q:"What should a visitor explore first to understand the exhibition?",o:["A booth","The lobby/orientation","A random country"],a:1},
+ {q:"Which topic is associated with skills preparation?",o:["Training","Parking","Entertainment"],a:0},
+ {q:"Which feature helps you discover relevant booths?",o:["Find Your Opportunity","Exit","Volume"],a:0},
+ {q:"What is the purpose of the Protection Journey?",o:["Explain the journey stages","Change the panorama","Play music"],a:0},
+ {q:"How many main exhibition nodes are represented in this interface?",o:["3","6","12"],a:1}
+];
+function quiz(){
+ state.quizIndex=0;state.quizScore=0;renderQuiz();
+}
+function renderQuiz(){
+ const q=questions[state.quizIndex];
+ if(!q){open(`<h1 class="v16-title">🧠 Quiz Complete</h1><div class="v16-score">${state.quizScore} / ${questions.length}</div><p class="v16-sub">Thanks for exploring the exhibition.</p><button class="v16-btn" id="v16-retry">Try again</button>`);$("v16-retry").onclick=quiz;return}
+ open(`<h1 class="v16-title">🧠 Knowledge Challenge</h1><p class="v16-sub">Question ${state.quizIndex+1} of ${questions.length}</p>
+ <div class="v16-progressbar"><span style="width:${(state.quizIndex/questions.length)*100}%"></span></div>
+ <div class="v16-q">${q.q}</div>
+ ${q.o.map((x,i)=>`<button class="v16-option" data-answer="${i}">${x}</button>`).join("")}`);
+ document.querySelectorAll("[data-answer]").forEach(b=>b.onclick=()=>{if(+b.dataset.answer===q.a)state.quizScore++;state.quizIndex++;renderQuiz()});
+}
+function progress(){
+ open(`<h1 class="v16-title">✓ My Exhibition Progress</h1>
+ <p class="v16-sub">Your exploration progress is kept for this visit.</p>
+ <div class="v16-progressbar"><span style="width:${state.visited.size/6*100}%"></span></div>
+ <div class="v16-score">${state.visited.size} / 6</div>
+ <div class="v16-grid">${booths.map(b=>`<div class="v16-card"><h3>${state.visited.has(b.id)?"✓ ":""}${b.name}</h3><p>${state.visited.has(b.id)?"Explored":"Not explored yet"}</p><button class="v16-btn" data-fav="${b.id}">${state.favorites.has(b.id)?"★ Saved":"☆ Save"}</button></div>`).join("")}</div>`);
+ document.querySelectorAll("[data-fav]").forEach(b=>b.onclick=()=>{const id=b.dataset.fav;if(state.favorites.has(id))state.favorites.delete(id);else state.favorites.add(id);progress()});
+}
+
+document.querySelectorAll("[data-v16-open]").forEach(b=>b.addEventListener("click",()=>{
+ const type=b.dataset.v16Open;
+ if(type==="booths")open(boothList());if(type==="opportunity")opportunity();if(type==="journey")journey();if(type==="quiz")quiz();if(type==="progress")progress();
+}));
+
+document.addEventListener("click",e=>{
+ const booth=e.target.closest("[data-booth]");
+ if(booth){
+  markVisited(booth.dataset.booth);
+  if(typeof window.navigateTo==="function")window.navigateTo(booth.dataset.booth);
+  close();
+ }
+ const topic=e.target.closest("[data-topic]");
+ if(topic){
+  const r=$("v16-topic-result"); if(r)r.innerHTML=`<div class="v16-card"><h3>${topic.dataset.topic}</h3><p>${topics[topic.dataset.topic].join(" • ")}</p></div>`;
+ }
+});
+
+// Sync when the original site changes booth.
+setInterval(()=>{
+ const id=window.currentBooth;
+ if(id&&booths.some(b=>b.id===id))markVisited(id);
+},1000);
+updateProgress();
+})();
+
 
